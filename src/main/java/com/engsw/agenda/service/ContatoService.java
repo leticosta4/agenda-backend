@@ -6,11 +6,16 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.rsocket.RSocketProperties.Server.Spec;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.engsw.agenda.dto.contato.ContatoDTO;
+import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.ContatoRepository;
+import com.engsw.agenda.specification.ContatoSpecification;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -18,8 +23,11 @@ import jakarta.transaction.Transactional;
 public class ContatoService {
     @Autowired private ContatoRepository contatoRepository;
 
-    public List<ContatoRespostaDTO> buscarContatos(){
-        List<Contato> contatos = contatoRepository.findAll();
+    public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
+        Specification<Contato> spec = Specification
+                                               .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
+                                               .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
+        List<Contato> contatos = contatoRepository.findAll(spec);
 
         return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }

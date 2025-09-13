@@ -1,6 +1,7 @@
 package com.engsw.agenda.specification;
 import org.springframework.data.jpa.domain.Specification;
 import com.engsw.agenda.model.Contato;
+
 public class ContatoSpecification {
 
 
