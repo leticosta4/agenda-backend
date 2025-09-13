@@ -27,8 +27,6 @@ import jakarta.validation.Valid;
 public class ContatoController {
     @Autowired private ContatoService contatoService;
 
-
-
     @GetMapping
     public ResponseEntity<List<ContatoRespostaDTO>> listarContatos(@ParameterObject @ModelAttribute ContatoFiltroDTO filtro){
         List<ContatoRespostaDTO> contatos = contatoService.buscarContatos(filtro);

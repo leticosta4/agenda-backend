@@ -12,15 +12,18 @@ import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.ContatoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ContatoService {
     @Autowired private ContatoRepository contatoRepository;
+
     public List<ContatoRespostaDTO> buscarContatos(){
         List<Contato> contatos = contatoRepository.findAll();
 
         return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
+
 
     public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
         Optional<Contato> contato = contatoRepository.findById(contatoId);
@@ -28,6 +31,7 @@ public class ContatoService {
         return contato.map(ContatoRespostaDTO::new);
     }
 
+    @Transactional
     public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
         Contato contato = 
                         contatoRepository.findById(contatoId)
@@ -45,6 +49,7 @@ public class ContatoService {
         return new ContatoRespostaDTO(contato);
     }
 
+    @Transactional
     public void excluirContato(UUID contatoId){
         if(!contatoRepository.existsById(contatoId)){
             throw new EntityNotFoundException("Contato não Encontrado");

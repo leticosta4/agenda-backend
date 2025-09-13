@@ -11,38 +11,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AgendaMap implements IAgenda{
+public class AgendaMap{
     private HashMap<String, Contato> listaContato = new HashMap<String, Contato>();
 
-    @Override
-    public int localizaContato(String telefone) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localizaContato'");
-    }
-
-    @Override
-    public String getContato(String telefone) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContato'");
-    }
-
-    @Override
-    public boolean adicionaContato(Contato contato) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adicionaContato'");
-    }
-
-    @Override
-    public boolean removeContato(String telefone) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeContato'");
-    }
-
-    @Override
-    public Collection<Contato> getListaAgenda() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getListaAgenda'");
-    }
-
-    //fazer override dos metodos
+    //talvez voltar para o modo inicial com herança da agenda no model
 }
