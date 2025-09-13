@@ -25,9 +25,9 @@ import com.engsw.agenda.service.ContatoService;
 public class ContatoTest {
     @Autowired private MockMvc mockMvc;
 
-    @MockBean private ContatoService contatoService;
+    @MockBean private ContatoService contatoService; //usa mockbean pq precisa do contexto do spring, e ele que cuida do mock
 
-    ContatoRespostaDTO preparaDTOs(String nome, String tel, String ag){
+    public ContatoRespostaDTO preparaDTOs(String nome, String tel, String ag){
         ContatoRespostaDTO ctt = new ContatoRespostaDTO();
         ctt.setId(UUID.randomUUID());
         ctt.setNome(nome);
@@ -36,10 +36,10 @@ public class ContatoTest {
         ctt.setCriadoEm(LocalDateTime.now());
 
         return ctt;
-    }    
-
+    }
+    
     @Test
-    public void deveBuscarContatos() throws Exception{
+    public void deveBuscarContatosPeloEndpoint() throws Exception{
         List<ContatoRespostaDTO> contatos = List.of(
             preparaDTOs("Letícia", "71999999999", "Agenda de Fulano"),
             preparaDTOs("Alysson", "71988888888", "Agenda de Fulano")
