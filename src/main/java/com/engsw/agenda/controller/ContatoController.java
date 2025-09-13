@@ -3,10 +3,12 @@ package com.engsw.agenda.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.engsw.agenda.dto.contato.ContatoDTO;
+import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.service.ContatoService;
 
@@ -27,8 +30,8 @@ public class ContatoController {
 
 
     @GetMapping
-    public ResponseEntity<List<ContatoRespostaDTO>> listarContatos(){
-        List<ContatoRespostaDTO> contatos = contatoService.buscarContatos();
+    public ResponseEntity<List<ContatoRespostaDTO>> listarContatos(@ParameterObject @ModelAttribute ContatoFiltroDTO filtro){
+        List<ContatoRespostaDTO> contatos = contatoService.buscarContatos(filtro);
         return ResponseEntity.ok(contatos);
     }
 
