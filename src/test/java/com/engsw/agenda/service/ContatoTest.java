@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
@@ -43,7 +44,7 @@ public class ContatoTest {
 
 
         Mockito.when(contatoRepo.findAll()).thenReturn(contatosBanco);
-        List<ContatoRespostaDTO> resultado = contatoService.buscarContatos();
+        List<ContatoRespostaDTO> resultado = contatoService.buscarContatos(new ContatoFiltroDTO(null, null));
 
         assertEquals(2, resultado.size());
         

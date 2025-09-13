@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.is;
 
+import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.service.ContatoService;
 
@@ -45,7 +46,7 @@ public class ContatoTest {
             preparaDTOs("Alysson", "71988888888", "Agenda de Fulano")
         );
 
-        Mockito.when(contatoService.buscarContatos()).thenReturn(contatos); //mock do service
+        Mockito.when(contatoService.buscarContatos(new ContatoFiltroDTO(null, null))).thenReturn(contatos); //mock do service
 
         mockMvc.perform(get("/contatos")
                         .contentType(MediaType.APPLICATION_JSON))
