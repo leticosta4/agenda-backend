@@ -60,6 +60,5 @@ public class ContatoTest {
 
     }
 
-    //fazer um teste do buscar com filtros
-    //um get especifico de um contato
+    //criar, editar, apagar, get unico e get todos mas com filtro
 }

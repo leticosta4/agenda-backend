@@ -32,4 +32,22 @@ public class AgendaService {
     public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
     }
+
+    //aparentemente ta com erro
+    public Agenda editarAgenda(UUID idAgenda, String novoNome){
+        Agenda agenda = 
+                        agendaRepo.findById(idAgenda)
+                        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
+
+
+        if(!novoNome.equals("")){
+            agenda.setNome(novoNome);
+            agendaRepo.save(agenda);
+        }
+
+
+        return agenda;
+    }
+
+    
 }

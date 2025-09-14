@@ -1,7 +1,11 @@
 package com.engsw.agenda.service.agenda;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
+import java.util.UUID;
 
+import com.engsw.agenda.dto.contato.ContatoDTO;
+import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 
 import lombok.Getter;
@@ -11,8 +15,29 @@ import lombok.NoArgsConstructor;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AgendaList{
-    private List<Contato> listaContato = new ArrayList<>();
+public class AgendaList implements IAgenda{
+    private List<Contato> listaContato;
 
-    //talvez voltar para o modo inicial com herança da agenda no model
+    //adicionar exceptions no add e remover
+
+    @Override
+    public void adicionarContato(ContatoDTO ctt, Agenda ag) {
+        if(this.listaContato != null){
+            this.listaContato.add(ctt.transformaParaObj(ag));
+        }
+    }
+
+    @Override
+    public void removerContato(UUID cttId) {
+        if(this.listaContato != null){
+            this.listaContato.remove(cttId); //pt de atenção
+        }
+    }
+
+    // @Override
+    // public Collection criarListaTempParaAgenda(String nome) {
+    //     this.listaContato = new ArrayList<>();
+    //     return this.listaContato;
+    // }
+
 }
