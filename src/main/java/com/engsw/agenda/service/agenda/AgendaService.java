@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.engsw.agenda.dto.AgendaDTO;
 import com.engsw.agenda.model.Agenda;
-import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
 
 import jakarta.persistence.EntityNotFoundException;

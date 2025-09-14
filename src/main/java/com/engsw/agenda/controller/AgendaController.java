@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.engsw.agenda.dto.AgendaDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Agenda;
-import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.service.ContatoService;
 import com.engsw.agenda.service.agenda.AgendaService;
 
@@ -27,7 +26,7 @@ public class AgendaController {
     @Autowired private ContatoService contatoService;
 
     @PostMapping("/criar")
-    public ResponseEntity<Agenda> criarAgenda(@RequestParam String noemAgenda) { //revisar se esse tipo mesmo de retorno ou outro
+    public ResponseEntity<Agenda> criarAgenda(@RequestParam String noemAgenda) {
         AgendaDTO dto = new AgendaDTO();
         dto.setNome(noemAgenda);
 
