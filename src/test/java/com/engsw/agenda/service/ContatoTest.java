@@ -63,4 +63,5 @@ public class ContatoTest {
     }
 
     //testar ainda os filtros do specification
+    //um get especifico de um contato
 }

@@ -59,4 +59,7 @@ public class ContatoTest {
                 .andExpect(jsonPath("$[*].agenda", everyItem(is("Agenda de Fulano"))));
 
     }
+
+    //fazer um teste do buscar com filtros
+    //um get especifico de um contato
 }
