@@ -5,11 +5,13 @@ package com.engsw.agenda.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -32,15 +34,19 @@ public class ContatoTest {
     @Mock private ContatoRepository contatoRepo;
     @InjectMocks private ContatoService contatoService;
 
+    public Contato preparaObj(String nome, String tel, Agenda ag){
+        Contato ctt = new Contato(nome, tel, ag);
+        ctt.setId(UUID.randomUUID());
+        return ctt;
+    }
+
     @Test
     public void deveBuscarContatos(){
         Agenda ag = new Agenda("teste");
         ag.setId(UUID.randomUUID());
 
-        Contato ctt1 = new Contato("Letícia", "71999999999", ag);
-        ctt1.setId(UUID.randomUUID());
-        Contato ctt2 = new Contato("Alysson", "71988888888", ag);
-        ctt2.setId(UUID.randomUUID());
+        Contato ctt1 = preparaObj("Letícia", "71999999999", ag);
+        Contato ctt2 = preparaObj("Alysson", "71988888888", ag);
 
         List<Contato> contatosBanco = List.of(ctt1, ctt2);
 
@@ -59,6 +65,29 @@ public class ContatoTest {
         });
 
         verify(contatoRepo, times(1)).findAll(any(Specification.class));
+
+    }
+
+    @Test
+    public void deveBuscarContatoUnico(){
+        Agenda ag = new Agenda("teste");
+        ag.setId(UUID.randomUUID());
+
+        Contato ctt = preparaObj("Letícia", "71999999999", ag);
+        UUID idContato = ctt.getId();
+
+        Mockito.when(contatoRepo.findById(idContato)).thenReturn(Optional.of(ctt));
+        Optional<ContatoRespostaDTO> resultadoOptional = contatoService.buscarContatoPorId(idContato);
+
+        assertTrue(resultadoOptional.isPresent());
+        ContatoRespostaDTO resultado = resultadoOptional.get();
+
+        assertNotNull(resultado.getId());
+        assertEquals(idContato, resultado.getId());
+        assertEquals("Letícia", resultado.getNome());
+        assertEquals("teste", resultado.getAgenda());
+
+        verify(contatoRepo, times(1)).findById(idContato);
 
     }
 

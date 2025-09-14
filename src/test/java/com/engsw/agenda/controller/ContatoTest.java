@@ -2,6 +2,7 @@ package com.engsw.agenda.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,20 @@ public class ContatoTest {
                 .andExpect(jsonPath("$[0].nome").value("Letícia"))
                 .andExpect(jsonPath("$[1].nome").value("Alysson"))
                 .andExpect(jsonPath("$[*].agenda", everyItem(is("Agenda de Fulano"))));
+
+    }
+
+    @Test
+    public void deveBuscarContatoUnico() throws Exception{
+        ContatoRespostaDTO cttTeste = preparaDTOs("Cainan", "71977777777", "Agenda de Fulano");
+        Mockito.when(contatoService.buscarContatoPorId(cttTeste.getId())).thenReturn(Optional.of(cttTeste));
+
+        mockMvc.perform(get("/contatos/{idContato}", cttTeste.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(cttTeste.getId().toString()))
+                .andExpect(jsonPath("$.nome").value("Cainan"))
+                .andExpect(jsonPath("$.agenda").value("Agenda de Fulano"));
 
     }
 }
