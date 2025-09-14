@@ -63,7 +63,12 @@ public class ContatoService {
         };
 
         contatoRepository.deleteById(contatoId);
+    }
 
+    public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID idAgenda){
+       List<Contato> contatos = contatoRepository.findByAgendaId(idAgenda);
+
+       return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
 
 }
