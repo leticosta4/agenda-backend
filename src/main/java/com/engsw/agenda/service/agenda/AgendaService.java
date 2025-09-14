@@ -11,6 +11,7 @@ import com.engsw.agenda.dto.AgendaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.repository.AgendaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 //so comunicação basica com os metodos crud de contato
@@ -33,18 +34,15 @@ public class AgendaService {
         return agendaRepo.findById(idAgenda);
     }
 
-    //aparentemente ta com erro
+    @Transactional
     public Agenda editarAgenda(UUID idAgenda, String novoNome){
-        Agenda agenda = 
-                        agendaRepo.findById(idAgenda)
-                        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
+        Agenda agenda = agendaRepo.findById(idAgenda)
+            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
-
-        if(!novoNome.equals("")){
+        if (novoNome != null && !novoNome.isBlank()) {
             agenda.setNome(novoNome);
             agendaRepo.save(agenda);
         }
-
 
         return agenda;
     }
