@@ -5,6 +5,7 @@ package com.engsw.agenda.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -13,10 +14,12 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
@@ -42,9 +45,10 @@ public class ContatoTest {
 
         List<Contato> contatosBanco = List.of(ctt1, ctt2);
 
+        Mockito.when(contatoRepo.findAll(any(Specification.class))).thenReturn(contatosBanco);
+        ContatoFiltroDTO filtroVazio = new ContatoFiltroDTO("", "");
+        List<ContatoRespostaDTO> resultado = contatoService.buscarContatos(filtroVazio);
 
-        Mockito.when(contatoRepo.findAll()).thenReturn(contatosBanco);
-        List<ContatoRespostaDTO> resultado = contatoService.buscarContatos(new ContatoFiltroDTO(null, null));
 
         assertEquals(2, resultado.size());
         
@@ -55,7 +59,9 @@ public class ContatoTest {
             assertEquals("teste", ctt.getAgenda());
         });
 
-        verify(contatoRepo, times(1)).findAll();
+        verify(contatoRepo, times(1)).findAll(any(Specification.class));
 
     }
+
+    //testar ainda os filtros do specification
 }

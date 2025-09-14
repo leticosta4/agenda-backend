@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -46,7 +47,7 @@ public class ContatoTest {
             preparaDTOs("Alysson", "71988888888", "Agenda de Fulano")
         );
 
-        Mockito.when(contatoService.buscarContatos(new ContatoFiltroDTO(null, null))).thenReturn(contatos); //mock do service
+        Mockito.when(contatoService.buscarContatos(ArgumentMatchers.any(ContatoFiltroDTO.class))).thenReturn(contatos); //mock do service
 
         mockMvc.perform(get("/contatos")
                         .contentType(MediaType.APPLICATION_JSON))

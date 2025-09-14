@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.engsw.agenda.dto.contato.ContatoDTO;
-import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
-import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
+import com.engsw.agenda.dto.contato.*;
 import com.engsw.agenda.service.ContatoService;
 
 import jakarta.validation.Valid;
