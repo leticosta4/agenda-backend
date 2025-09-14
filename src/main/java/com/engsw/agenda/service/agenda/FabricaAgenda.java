@@ -13,8 +13,15 @@ public class FabricaAgenda {
 
     private FabricaAgenda(){}
 
-   
+   public IAgenda criarListaAgenda(int tipoAgenda) {
+        switch (tipoAgenda) {
+            case AGENDAMAP:
+                return new AgendaMap();
+            case AGENDALIST:
+                return new AgendaList();
+            default:
+                throw new IllegalArgumentException("Tipo de agenda inválido: " + tipoAgenda);
+        }
+    }
 
 }
-
-//melhorar esse singleton com factory

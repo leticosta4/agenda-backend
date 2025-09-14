@@ -25,8 +25,12 @@ public class AgendaService {
         Agenda agenda = dto.transformaParaObj();
         Agenda agendaSalva = agendaRepo.save(agenda); 
 
-        //inserção no banco feita, falta ver como fazer a inserção em tempo de execução da list/hash usando o factory e o singleton
-        return agendaSalva; //talvez mudar depois o tipo de retorno
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(tipoAgenda);
+
+        agenda.setContatos(gerenciador.getListaContato());
+
+        return agenda;         
     }
 
     public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
