@@ -1,6 +1,5 @@
 package com.engsw.agenda.service.agenda;
 import java.util.HashMap;
-import java.util.Collection;
 
 import com.engsw.agenda.model.Contato;
 
