@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.engsw.agenda.dto.AgendaDTO;
 import com.engsw.agenda.model.Agenda;
+import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 //so comunicação basica com os metodos crud de contato
@@ -31,5 +33,20 @@ public class AgendaService {
 
     public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
+    }
+
+    public Agenda editarAgenda(UUID idAgenda, String novoNome){
+        Agenda agenda = 
+                        agendaRepo.findById(idAgenda)
+                        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
+
+
+        if(!novoNome.equals("")){
+            agenda.setNome(novoNome);
+            agendaRepo.save(agenda);
+        }
+
+
+        return agenda;
     }
 }
