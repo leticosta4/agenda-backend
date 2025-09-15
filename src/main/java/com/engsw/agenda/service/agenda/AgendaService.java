@@ -11,10 +11,13 @@ import com.engsw.agenda.dto.AgendaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.repository.AgendaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 //so comunicação basica com os metodos crud de contato
 //encapsular oq vamos precisar para os 2 tipos de agenda
+
+// Adicionar adicionar contato e remover contato
 
 @Service
 public class AgendaService {
@@ -28,12 +31,27 @@ public class AgendaService {
         FabricaAgenda fabrica = FabricaAgenda.getInstancia();
         IAgenda gerenciador = fabrica.criarListaAgenda(tipoAgenda);
 
-        agenda.setContatos(gerenciador.getListaContato());
+        agendaSalva.setContatos(gerenciador.criarLista());
 
-        return agenda;         
+        return agendaSalva;         
     }
 
     public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
     }
+
+    @Transactional
+    public Agenda editarAgenda(UUID idAgenda, String novoNome){
+        Agenda agenda = agendaRepo.findById(idAgenda)
+            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+
+        if (novoNome != null && !novoNome.isBlank()) {
+            agenda.setNome(novoNome);
+            agendaRepo.save(agenda);
+        }
+
+        return agenda;
+    }
+
+    
 }

@@ -13,7 +13,7 @@ public class FabricaAgenda {
 
     private FabricaAgenda(){}
 
-   public IAgenda criarListaAgenda(int tipoAgenda) {
+    public IAgenda criarListaAgenda(int tipoAgenda) {
         switch (tipoAgenda) {
             case AGENDAMAP:
                 return new AgendaMap();

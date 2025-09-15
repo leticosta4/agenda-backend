@@ -63,4 +63,5 @@ public class ContatoTest {
     }
 
     //testar ainda os filtros do specification
+    //criar, editar, apagar, get unico
 }

@@ -59,4 +59,6 @@ public class ContatoTest {
                 .andExpect(jsonPath("$[*].agenda", everyItem(is("Agenda de Fulano"))));
 
     }
+
+    //criar, editar, apagar, get unico e get todos mas com filtro
 }
