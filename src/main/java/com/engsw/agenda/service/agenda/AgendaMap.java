@@ -30,7 +30,8 @@ public class AgendaMap implements IAgenda{
     @Override
     public void adicionarContato(ContatoDTO ctt, Agenda ag) {
         if(this.listaContato != null){
-            this.listaContato.put(UUID.randomUUID(), ctt.transformaParaObj(ag));
+            Contato novoContato = ctt.transformaParaObj(ag);
+            this.listaContato.put(novoContato.getId(), novoContato);
         }
     }
 
@@ -38,6 +39,7 @@ public class AgendaMap implements IAgenda{
     public void removerContato(UUID cttId) {
         if(this.listaContato != null){
             this.listaContato.remove(UUID.randomUUID());
+            this.listaContato.remove(cttId);
         }
     }
 }

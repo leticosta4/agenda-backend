@@ -8,7 +8,7 @@ public class FabricaAgenda {
     private static final FabricaAgenda fabricaAgenda = new FabricaAgenda();
 
     public static FabricaAgenda getInstancia(){
-        return null;
+        return fabricaAgenda;
     }
 
     private FabricaAgenda(){}

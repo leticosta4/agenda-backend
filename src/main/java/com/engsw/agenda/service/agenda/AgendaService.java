@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.engsw.agenda.dto.AgendaDTO;
+import com.engsw.agenda.dto.contato.ContatoDTO;
 import com.engsw.agenda.model.Agenda;
+import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
+import com.engsw.agenda.repository.ContatoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,6 +25,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
+    @Autowired private ContatoRepository contatoRepo;
 
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
@@ -49,8 +53,39 @@ public class AgendaService {
             agenda.setNome(novoNome);
             agendaRepo.save(agenda);
         }
-
         return agenda;
+    }
+
+    @Transactional
+    public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
+        Agenda agenda = agendaRepo.findById(idAgenda)
+            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+
+        Contato novoContato = contatoDTO.transformaParaObj(agenda);
+        Contato contatoSalvo = contatoRepo.save(novoContato);
+
+        if (agenda.getContatos() != null) {
+             agenda.getContatos().add(contatoSalvo);
+        }
+
+        return contatoSalvo;
+    }
+
+    @Transactional
+    public void removerContatoAgenda(UUID idAgenda, UUID idContato){
+        Agenda agenda = agendaRepo.findById(idAgenda)
+            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+
+        if (!contatoRepo.existsById(idContato)) {
+            throw new EntityNotFoundException("Contato com ID " + idContato + " não encontrado");
+        }
+
+        if (agenda.getContatos() != null) {
+            // Isso usará a lógica corrigida (removeIf para List ou remove(key) para Map)
+            agenda.getContatos().removeIf(contato -> contato.getId().equals(idContato));
+            contatoRepo.deleteById(idContato);
+        }
+
     }
 
     

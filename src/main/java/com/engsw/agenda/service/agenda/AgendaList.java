@@ -2,7 +2,6 @@ package com.engsw.agenda.service.agenda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Collection;
 import java.util.UUID;
 
 import com.engsw.agenda.dto.contato.ContatoDTO;
@@ -38,7 +37,7 @@ public class AgendaList implements IAgenda{
     @Override
     public void removerContato(UUID cttId) {
         if(this.listaContato != null){
-            this.listaContato.remove(cttId); //pt de atenção
+            this.listaContato.removeIf(contato -> contato.getId().equals(cttId)); //pt de atenção
         }
     }
 }
