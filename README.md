@@ -13,7 +13,7 @@ deverão existir dois contatos com o mesmo telefone.
 
 
 ## Tabela
-![Imagem das tabelas](db/database.png)
+![Imagem das tabelas](docs/database-plan.png)
 
 # Instruções
 
@@ -22,13 +22,14 @@ deverão existir dois contatos com o mesmo telefone.
 Na pasta `src/main/resources`, crie o arquivo **`application-secrets.properties`** com as credenciais do banco:  
 ### Subir o container
  ```
-Rodar sudo docker compose up
+sudo docker compose up
 ```
 # Acessar o banco via adminer
 1. Abra http://localhost:8090
-Configure o login:
+2. Configure o login:
    * Sistema: PostgreSQL
    * Servidor: database
-   * Usuário: Definido na .env
-   * Senha: Definido na .env
-   * Banco de dados:Definido na .env
+   * Dados definidos no `.env`
+      * Usuário
+      * Senha
+      * Banco de dados
