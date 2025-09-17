@@ -12,5 +12,6 @@ public interface AgendaRepository extends JpaRepository<Agenda, UUID>{
     boolean existsById(UUID idAgenda);
     List<Agenda> findAll();
     Optional<Agenda> findById(UUID idAgenda);
+    Agenda findByNome(String nomeAgenda);
 
 }

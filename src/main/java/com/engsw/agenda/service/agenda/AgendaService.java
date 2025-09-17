@@ -27,11 +27,15 @@ public class AgendaService {
         Agenda agendaSalva = agendaRepo.save(agenda); 
 
         //inserção no banco feita, falta ver como fazer a inserção em tempo de execução da list/hash usando o factory e o singleton
-        return agendaSalva; //talvez mudar depois o tipo de retorno
+        return agendaSalva;
     }
 
-    public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
+    public Optional<Agenda> retornaAgendaUnicaById(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
+    }
+
+    public Agenda retornaAgendaUnicaByName(String nomeAgenda){ //rever o tipo do retorno
+        return agendaRepo.findByNome(nomeAgenda);
     }
 
     public Agenda editarAgenda(UUID idAgenda, String novoNome){
