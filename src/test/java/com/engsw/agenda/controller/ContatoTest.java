@@ -42,7 +42,7 @@ public class ContatoTest {
     }
     
     @Test
-    public void deveBuscarContatosPeloEndpoint() throws Exception{
+    public void testeBuscarContatos() throws Exception{
         List<ContatoRespostaDTO> contatos = List.of(
             preparaDTOs("Letícia", "71999999999", "Agenda de Fulano"),
             preparaDTOs("Alysson", "71988888888", "Agenda de Fulano")
@@ -62,7 +62,7 @@ public class ContatoTest {
     }
 
     @Test
-    public void deveBuscarContatoUnico() throws Exception{
+    public void testeBuscarContatoUnico() throws Exception{
         ContatoRespostaDTO cttTeste = preparaDTOs("Cainan", "71977777777", "Agenda de Fulano");
         Mockito.when(contatoService.buscarContatoPorId(cttTeste.getId())).thenReturn(Optional.of(cttTeste));
 
@@ -72,6 +72,20 @@ public class ContatoTest {
                 .andExpect(jsonPath("$.id").value(cttTeste.getId().toString()))
                 .andExpect(jsonPath("$.nome").value("Cainan"))
                 .andExpect(jsonPath("$.agenda").value("Agenda de Fulano"));
+
+    }
+
+    @Test
+    public void testeEditarContato() throws Exception{
+        // ContatoRespostaDTO cttTeste = preparaDTOs("Cainan", "71977777777", "Agenda de Fulano");
+        // Mockito.when(contatoService.buscarContatoPorId(cttTeste.getId())).thenReturn(Optional.of(cttTeste));
+
+        // mockMvc.perform(get("/contatos/{idContato}", cttTeste.getId())
+        //                 .contentType(MediaType.APPLICATION_JSON))
+        //         .andExpect(status().isOk())
+        //         .andExpect(jsonPath("$.id").value(cttTeste.getId().toString()))
+        //         .andExpect(jsonPath("$.nome").value("Cainan"))
+        //         .andExpect(jsonPath("$.agenda").value("Agenda de Fulano"));
 
     }
 }
