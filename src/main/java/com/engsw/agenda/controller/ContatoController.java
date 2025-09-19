@@ -48,7 +48,7 @@ public class ContatoController {
     }
 
     @PutMapping("/{contatoId}")
-    public ResponseEntity<ContatoRespostaDTO> editarContato(@PathVariable UUID contatoId, @Valid @RequestBody ContatoDTO contatoNovo){
+    public ResponseEntity<ContatoRespostaDTO> editarContato(@PathVariable UUID contatoId, @RequestBody ContatoDTO contatoNovo){
         ContatoRespostaDTO contatoEditado = contatoService.editarContato(contatoId, contatoNovo);
         return ResponseEntity.ok(contatoEditado);
     }

@@ -61,6 +61,7 @@ public class ContatoService {
         if (contatoNovo.getTelefone() != null) {
             contato.setTelefone(contatoNovo.getTelefone());
         }
+        
         contato.setModificadoEm(LocalDateTime.now());
         contatoRepo.save(contato);
         return new ContatoRespostaDTO(contato);
