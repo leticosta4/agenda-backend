@@ -40,11 +40,14 @@ public class AgendaService {
         return agendaSalva;         
     }
 
-    public Optional<Agenda> retornaAgendaUnica(UUID idAgenda){ //rever o tipo do retorno
+    public Optional<Agenda> retornaAgendaUnicaById(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
     }
 
-    @Transactional
+    public Agenda retornaAgendaUnicaByName(String nomeAgenda){ //rever o tipo do retorno
+        return agendaRepo.findByNome(nomeAgenda);
+    }
+
     public Agenda editarAgenda(UUID idAgenda, String novoNome){
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
