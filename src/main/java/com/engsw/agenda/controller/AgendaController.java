@@ -35,10 +35,15 @@ public class AgendaController {
         return ResponseEntity.ok(nova);
     }
 
-
+    @GetMapping("/entrar")
+    public ResponseEntity<Agenda> entrarAgenda(@RequestParam String nomeAgenda) {
+        Agenda agenda = agendaService.retornaAgendaUnicaByName(nomeAgenda);
+        return ResponseEntity.ok(agenda);
+    }
+    
     @GetMapping("/{idAgenda}")
     public ResponseEntity<Agenda> buscarId(@PathVariable UUID idAgenda) {
-        return agendaService.retornaAgendaUnica(idAgenda)
+        return agendaService.retornaAgendaUnicaById(idAgenda)
                         .map(ResponseEntity::ok)
                         .orElse(ResponseEntity.notFound().build());
     }
