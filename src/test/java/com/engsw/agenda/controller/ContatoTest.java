@@ -75,3 +75,5 @@ public class ContatoTest {
 
     }
 }
+
+//criar, editar, apagar, get unico e get todos mas com filtro

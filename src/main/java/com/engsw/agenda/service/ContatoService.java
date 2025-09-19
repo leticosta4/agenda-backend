@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 import com.engsw.agenda.dto.contato.ContatoDTO;
 import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
+import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
-import com.engsw.agenda.repository.ContatoRepository;
+import com.engsw.agenda.repository.*;
 import com.engsw.agenda.specification.ContatoSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -20,28 +21,37 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ContatoService {
-    @Autowired private ContatoRepository contatoRepository;
+    @Autowired private ContatoRepository contatoRepo;
+    @Autowired private AgendaRepository agendaRepo;
 
     public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
         Specification<Contato> spec = Specification
                                                .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
                                                .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
-        List<Contato> contatos = contatoRepository.findAll(spec);
+        List<Contato> contatos = contatoRepo.findAll(spec);
 
         return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
 
 
     public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
-        Optional<Contato> contato = contatoRepository.findById(contatoId);
+        Optional<Contato> contato = contatoRepo.findById(contatoId);
 
         return contato.map(ContatoRespostaDTO::new);
     }
 
     @Transactional
+    public ContatoRespostaDTO criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
+        Agenda agenda = agendaRepo.findByIdAgenda(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
+        
+        Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
+        return new ContatoRespostaDTO(novoSalvo);
+    }
+    
+    @Transactional
     public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
         Contato contato = 
-                        contatoRepository.findById(contatoId)
+                        contatoRepo.findById(contatoId)
                         .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
 
 
@@ -52,21 +62,21 @@ public class ContatoService {
             contato.setTelefone(contatoNovo.getTelefone());
         }
         contato.setModificadoEm(LocalDateTime.now());
-        contatoRepository.save(contato);
+        contatoRepo.save(contato);
         return new ContatoRespostaDTO(contato);
     }
 
     @Transactional
     public void excluirContato(UUID contatoId){
-        if(!contatoRepository.existsById(contatoId)){
+        if(!contatoRepo.existsById(contatoId)){
             throw new EntityNotFoundException("Contato não Encontrado");
         };
 
-        contatoRepository.deleteById(contatoId);
+        contatoRepo.deleteById(contatoId);
     }
 
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID idAgenda){
-       List<Contato> contatos = contatoRepository.findByAgendaId(idAgenda);
+       List<Contato> contatos = contatoRepo.findByAgendaId(idAgenda);
 
        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }

@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.engsw.agenda.dto.AgendaDTO;
@@ -19,6 +20,8 @@ import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.service.ContatoService;
 import com.engsw.agenda.service.agenda.AgendaService;
 
+
+
 @RestController
 @RequestMapping("/agenda")
 public class AgendaController {
@@ -26,12 +29,9 @@ public class AgendaController {
     @Autowired private ContatoService contatoService;
 
     @PostMapping("/criar")
-    public ResponseEntity<Agenda> criarAgenda(@RequestParam String noemAgenda) {
-        AgendaDTO dto = new AgendaDTO();
-        dto.setNome(noemAgenda);
-
+    public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
         //ver como passar o numero certo para criação de list ou map
-        Agenda nova = agendaService.criarAgenda(dto, 0);
+        Agenda nova = agendaService.criarAgenda(agendaDTO, 0);
         return ResponseEntity.ok(nova);
     }
 
