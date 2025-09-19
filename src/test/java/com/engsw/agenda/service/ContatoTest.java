@@ -41,7 +41,7 @@ public class ContatoTest {
     }
 
     @Test
-    public void deveBuscarContatos(){
+    public void testeBuscarContatos(){
         Agenda ag = new Agenda("teste");
         ag.setId(UUID.randomUUID());
 
@@ -69,7 +69,7 @@ public class ContatoTest {
     }
 
     @Test
-    public void deveBuscarContatoUnico(){
+    public void testeBuscarContatoUnico(){
         Agenda ag = new Agenda("teste");
         ag.setId(UUID.randomUUID());
 
