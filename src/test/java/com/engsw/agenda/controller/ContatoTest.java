@@ -60,7 +60,7 @@ public class ContatoTest {
 
     
     @Test
-    public void deveBuscarContatosPeloEndpoint() throws Exception{
+    public void testeBuscarContatos() throws Exception{
         Agenda agenda = mockAgenda();
         List<ContatoRespostaDTO> contatos = List.of(
             preparaDTOsResposta("Letícia", "71999999999", agenda.getNome()),
@@ -80,12 +80,12 @@ public class ContatoTest {
 
     }
 
+  
     @Test
-    public void deveBuscarContatoUnico() throws Exception{
+    public void testeBuscarContatoUnico() throws Exception{
         Agenda agenda = mockAgenda();
         ContatoRespostaDTO cttTeste = preparaDTOsResposta("Cainan", "71977777777", agenda.getNome());
-        Mockito.when(contatoService.criarContato(Mockito.any(ContatoDTO.class), Mockito.eq(agenda.getId())))
-           .thenReturn(cttTeste);
+        Mockito.when(contatoService.criarContato(Mockito.any(ContatoDTO.class), Mockito.eq(agenda.getId()))).thenReturn(cttTeste);
 
         mockMvc.perform(get("/contatos/{idContato}", cttTeste.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -96,6 +96,7 @@ public class ContatoTest {
 
     }
 
+  
     @Test
     public void testeCriarContato() throws Exception {
         Agenda agenda = mockAgenda();

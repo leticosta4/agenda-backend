@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
-    @PostMapping("/criar")
+    @PostMapping("/")
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
         //ver como passar o numero certo para criação de list ou map
         Agenda nova = agendaService.criarAgenda(agendaDTO, 0);
@@ -48,7 +48,7 @@ public class AgendaController {
                         .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{idAgenda}")
+    @PatchMapping("/{idAgenda}")
     public ResponseEntity<Agenda> editarAgenda(@PathVariable UUID idAgenda, @RequestParam String nomeAgendaNovo){
         Agenda novaAgenda = agendaService.editarAgenda(idAgenda, nomeAgendaNovo);
 

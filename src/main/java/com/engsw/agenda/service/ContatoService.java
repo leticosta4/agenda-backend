@@ -44,6 +44,13 @@ public class ContatoService {
     public ContatoRespostaDTO criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
         
+        if(dto.getTelefone() == null || !dto.getTelefone().matches("\\d+")) {
+            throw new IllegalArgumentException("Telefone inválido. Deve conter apenas dígitos numéricos.");
+        }
+        if(dto.getTelefone().length() != 11 ){
+            throw new IllegalArgumentException("Telefone inválido. Deve conter exatamente 11 dígitos.");
+        }
+        
         Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
         return new ContatoRespostaDTO(novoSalvo);
     }
