@@ -28,7 +28,7 @@ public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
-    @PostMapping("/criar")
+    @PostMapping("/")
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
         //ver como passar o numero certo para criação de list ou map
         Agenda nova = agendaService.criarAgenda(agendaDTO, 0);
