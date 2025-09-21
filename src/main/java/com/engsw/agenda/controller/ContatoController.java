@@ -36,7 +36,8 @@ public class ContatoController {
 
     @PostMapping("/{agendaId}")
     public ResponseEntity<ContatoRespostaDTO> criarContato(@PathVariable UUID agendaId, @Valid @RequestBody ContatoDTO contatoNovo) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(contatoService.criarContato(contatoNovo, agendaId));
+        ContatoRespostaDTO ctt = new ContatoRespostaDTO(contatoService.criarContato(contatoNovo, agendaId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ctt);
     }
     
 

@@ -13,6 +13,7 @@ import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
 import com.engsw.agenda.repository.ContatoRepository;
+import com.engsw.agenda.service.ContatoService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ import jakarta.transaction.Transactional;
 public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
     @Autowired private ContatoRepository contatoRepo;
+    @Autowired private ContatoService contatoService;
 
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
@@ -55,11 +57,13 @@ public class AgendaService {
         return agenda;
     }
 
+
     @Transactional
     public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
+        //talvez mudar isso aqui para chamar o serivce de contato    
         Contato novoContato = contatoDTO.transformaParaObj(agenda);
         Contato contatoSalvo = contatoRepo.save(novoContato);
 
