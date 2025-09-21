@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +29,11 @@ public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
-        //ver como passar o numero certo para criação de list ou map
-        Agenda nova = agendaService.criarAgenda(agendaDTO, 0);
-        return ResponseEntity.ok(nova);
+        System.out.println("Recebido: " + agendaDTO.getNome());
+        Agenda nova = agendaService.criarAgenda(agendaDTO, 0); //começando como lista
+        return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }
 
     @GetMapping("/entrar")
