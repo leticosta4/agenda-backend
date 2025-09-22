@@ -17,10 +17,9 @@ import com.engsw.agenda.repository.ContatoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-//so comunicação basica com os metodos crud de contato
-//encapsular oq vamos precisar para os 2 tipos de agenda
+//so comunicação basica com os metodos crud de contato + encapsular oq vamos precisar para os 2 tipos de agenda
 
-// Adicionar adicionar contato e remover contato
+// CRIAR A LISTA E MAP DE FORMA GLOBAL
 
 @Service
 public class AgendaService {
@@ -58,6 +57,8 @@ public class AgendaService {
         }
         return agenda;
     }
+
+//CONSERTAR O ADD E O REMOVER
 
     @Transactional
     public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
