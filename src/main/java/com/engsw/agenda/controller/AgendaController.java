@@ -31,7 +31,6 @@ public class AgendaController {
 
     @PostMapping
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
-        System.out.println("Recebido: " + agendaDTO.getNome());
         Agenda nova = agendaService.criarAgenda(agendaDTO, 0); //começando como lista
         return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }

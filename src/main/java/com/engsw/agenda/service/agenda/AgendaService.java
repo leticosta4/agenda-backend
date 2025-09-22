@@ -17,10 +17,8 @@ import com.engsw.agenda.repository.ContatoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-//so comunicação basica com os metodos crud de contato
-//encapsular oq vamos precisar para os 2 tipos de agenda
+//so comunicação basica com os metodos crud de contato + encapsular oq vamos precisar para os 2 tipos de agenda
 
-// Adicionar adicionar contato e remover contato
 
 @Service
 public class AgendaService {
@@ -32,8 +30,12 @@ public class AgendaService {
         Agenda agenda = dto.transformaParaObj();
         Agenda agendaSalva = agendaRepo.save(agenda); 
 
-        //inserção no banco feita, falta ver como fazer a inserção em tempo de execução da list/hash usando o factory e o singleton
-        return agendaSalva;
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(tipoAgenda);
+
+        agendaSalva.setContatos(gerenciador.criarLista());
+
+        return agendaSalva;         
     }
 
     public Optional<Agenda> retornaAgendaUnicaById(UUID idAgenda){ //rever o tipo do retorno
