@@ -42,7 +42,7 @@ public class ContatoTest {
     }
     
     @Test
-    public void deveBuscarContatosPeloEndpoint() throws Exception{
+    public void testeBuscarContatosPeloEndpoint() throws Exception{
         List<ContatoRespostaDTO> contatos = List.of(
             preparaDTOs("Letícia", "71999999999", "Agenda de Fulano"),
             preparaDTOs("Alysson", "71988888888", "Agenda de Fulano")
@@ -62,7 +62,7 @@ public class ContatoTest {
     }
 
     @Test
-    public void deveBuscarContatoUnico() throws Exception{
+    public void testeBuscarContatoUnico() throws Exception{
         ContatoRespostaDTO cttTeste = preparaDTOs("Cainan", "71977777777", "Agenda de Fulano");
         Mockito.when(contatoService.buscarContatoPorId(cttTeste.getId())).thenReturn(Optional.of(cttTeste));
 
