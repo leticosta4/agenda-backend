@@ -40,6 +40,7 @@ public class ContatoService {
         return contato.map(ContatoRespostaDTO::new);
     }
 
+  
     @Transactional
     public ContatoRespostaDTO criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
@@ -51,10 +52,18 @@ public class ContatoService {
             throw new IllegalArgumentException("Telefone inválido. Deve conter exatamente 11 dígitos.");
         }
         
+        if(dto.getTelefone() == null || !dto.getTelefone().matches("\\d+")) {
+            throw new IllegalArgumentException("Telefone inválido. Deve conter apenas dígitos numéricos.");
+        }
+        if(dto.getTelefone().length() != 11 ){
+            throw new IllegalArgumentException("Telefone inválido. Deve conter exatamente 11 dígitos.");
+        }
+
         Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
         return new ContatoRespostaDTO(novoSalvo);
     }
     
+  
     @Transactional
     public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
         Contato contato = 
@@ -73,6 +82,7 @@ public class ContatoService {
         return new ContatoRespostaDTO(contato);
     }
 
+  
     @Transactional
     public void excluirContato(UUID contatoId){
         if(!contatoRepo.existsById(contatoId)){
@@ -82,6 +92,7 @@ public class ContatoService {
         contatoRepo.deleteById(contatoId);
     }
 
+  
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID idAgenda){
        List<Contato> contatos = contatoRepo.findByAgendaId(idAgenda);
 
