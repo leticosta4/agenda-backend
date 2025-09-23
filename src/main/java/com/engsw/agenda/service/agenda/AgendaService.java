@@ -26,6 +26,8 @@ public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
     @Autowired private ContatoRepository contatoRepo;
 
+    int TIPO_AGENDA = 1;
+
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
         Agenda agenda = dto.transformaParaObj();
@@ -61,35 +63,31 @@ public class AgendaService {
 //CONSERTAR O ADD E O REMOVER
 
     @Transactional
-    public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
+    public void adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
         Contato novoContato = contatoDTO.transformaParaObj(agenda);
-        Contato contatoSalvo = contatoRepo.save(novoContato);
 
-        if (agenda.getContatos() != null) {
-             agenda.getContatos().add(contatoSalvo);
-        }
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
-        return contatoSalvo;
+        gerenciador.adicionarContato(agenda.getContatos(), novoContato);
     }
 
     @Transactional
-    public void removerContatoAgenda(UUID idAgenda, UUID idContato){
+    public void removerContatoAgenda(UUID idAgenda, UUID idContato) {
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
         if (!contatoRepo.existsById(idContato)) {
             throw new EntityNotFoundException("Contato com ID " + idContato + " não encontrado");
         }
+        
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
-        if (agenda.getContatos() != null) {
-            // Isso usará a lógica corrigida (removeIf para List ou remove(key) para Map)
-            agenda.getContatos().removeIf(contato -> contato.getId().equals(idContato));
-            contatoRepo.deleteById(idContato);
-        }
-
+        gerenciador.removerContato(agenda.getContatos(), idContato);
     }
 
     

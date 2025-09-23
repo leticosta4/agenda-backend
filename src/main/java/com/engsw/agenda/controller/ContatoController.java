@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.engsw.agenda.dto.contato.*;
+import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.service.ContatoService;
+import com.engsw.agenda.service.agenda.AgendaService;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/contatos")
 public class ContatoController {
     @Autowired private ContatoService contatoService;
+    @Autowired private AgendaService agendaService;
 
     @GetMapping
     public ResponseEntity<List<ContatoRespostaDTO>> listarContatos(@ParameterObject @ModelAttribute ContatoFiltroDTO filtro){
@@ -36,7 +39,12 @@ public class ContatoController {
 
     @PostMapping("/{agendaId}")
     public ResponseEntity<ContatoRespostaDTO> criarContato(@PathVariable UUID agendaId, @Valid @RequestBody ContatoDTO contatoNovo) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(contatoService.criarContato(contatoNovo, agendaId));
+        ContatoRespostaDTO contatoCriado = contatoService.criarContato(contatoNovo, agendaId);
+        
+        //chama o metodo de criar de agenda service
+        agendaService.adicionarContatoAgenda(agendaId, contatoNovo);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(contatoCriado);
     }
     
 
@@ -56,6 +64,9 @@ public class ContatoController {
     @DeleteMapping("/{contatoId}")
     public ResponseEntity<Void> excluirContato(@PathVariable UUID contatoId){
         contatoService.excluirContato(contatoId);
+        
+        //Ainda n funciona
+        //agendaService.removerContatoAgenda(contatoId);
 
         return ResponseEntity.noContent().build();
     }
