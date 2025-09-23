@@ -30,8 +30,7 @@ public class AgendaController {
 
     @PostMapping("/")
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) { //revisar se esse tipo mesmo de retorno ou outro
-        //ver como passar o numero certo para criação de list ou map
-        Agenda nova = agendaService.criarAgenda(agendaDTO, 0);
+        Agenda nova = agendaService.criarAgenda(agendaDTO, 1); //inicialmente como lista
         return ResponseEntity.ok(nova);
     }
 
