@@ -41,7 +41,7 @@ public class ContatoService {
     }
 
     @Transactional
-    public ContatoRespostaDTO criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
+    public Contato criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
         
         //Verificacao de digito de telefone
@@ -53,7 +53,7 @@ public class ContatoService {
         }
 
         Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
-        return new ContatoRespostaDTO(novoSalvo);
+        return novoSalvo;
     }
     
     @Transactional
