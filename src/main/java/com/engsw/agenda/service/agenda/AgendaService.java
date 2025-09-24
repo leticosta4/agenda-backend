@@ -103,6 +103,4 @@ public class AgendaService {
 
         return new ContatoRespostaDTO(cttEditado);       
     }
-
-    //fazer talvez o acesso unico de ctt
 }
