@@ -94,4 +94,20 @@ public class AgendaController {
 
         return ResponseEntity.ok(novaAgenda);
     }
+
+
+    @DeleteMapping("/{idAgenda}/contatos/remover")
+    public ResponseEntity<Void> removerContatos(@PathVariable UUID idAgenda, @RequestBody ContatoFiltroDTO filtro){
+        contatoService.excluirContatosPorNome(idAgenda,filtro.getNome());
+        return ResponseEntity.noContent().build();
+    }
+
+    //adaptar talvez o endpoint de acesso unico de contato
+    // @GetMapping("/{contatoId}") 
+    // public ResponseEntity<ContatoRespostaDTO> buscarPorId(@PathVariable UUID contatoId){
+    //     return contatoService.buscarContatoPorId(contatoId)
+    //            .map(ResponseEntity::ok)
+    //            .orElse(ResponseEntity.notFound().build());
+    // }
+
 }
