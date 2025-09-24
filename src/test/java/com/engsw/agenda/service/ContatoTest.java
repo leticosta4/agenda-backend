@@ -28,6 +28,8 @@ import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.ContatoRepository;
 
+//REFATORAR TUDO
+
 @ExtendWith(MockitoExtension.class)
 public class ContatoTest {
     //esses outros mocks n precisam do contexto do spring e o mockito que cuida

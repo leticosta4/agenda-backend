@@ -24,44 +24,26 @@ public class ContatoService {
     @Autowired private ContatoRepository contatoRepo;
     @Autowired private AgendaRepository agendaRepo;
 
-    public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
-        Specification<Contato> spec = Specification
-                                               .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
-                                               .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
-        List<Contato> contatos = contatoRepo.findAll(spec);
-
-        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
-    }
-
-
-    public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
-        Optional<Contato> contato = contatoRepo.findById(contatoId);
-
-        return contato.map(ContatoRespostaDTO::new);
-    }
 
     @Transactional
-    public ContatoRespostaDTO criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
+    public Contato criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
         
-        //Verificacao de digito de telefone
+
         if(dto.getTelefone() == null || !dto.getTelefone().matches("\\d+")) {
             throw new IllegalArgumentException("Telefone inválido. Deve conter apenas dígitos numéricos.");
-        }
-        if(dto.getTelefone().length() != 11 ){
+        } if(dto.getTelefone().length() != 11 ){
             throw new IllegalArgumentException("Telefone inválido. Deve conter exatamente 11 dígitos.");
         }
 
         Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
-        return new ContatoRespostaDTO(novoSalvo);
+        return novoSalvo;
     }
+
     
     @Transactional
-    public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
-        Contato contato = 
-                        contatoRepo.findById(contatoId)
-                        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
-
+    public Contato editarContato(UUID contatoId, ContatoDTO contatoNovo){
+        Contato contato = contatoRepo.findById(contatoId).orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
 
         if (contatoNovo.getNome() != null) {
             contato.setNome(contatoNovo.getNome());
@@ -71,8 +53,9 @@ public class ContatoService {
         }
         contato.setModificadoEm(LocalDateTime.now());
         contatoRepo.save(contato);
-        return new ContatoRespostaDTO(contato);
+        return contato;
     }
+
 
     @Transactional
     public void excluirContato(UUID contatoId){
@@ -82,6 +65,7 @@ public class ContatoService {
 
         contatoRepo.deleteById(contatoId);
     }
+
 
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID agendaId, String nome, String telefone){
         Specification<Contato> spec = ContatoSpecification.filtrarPorAgendaId(agendaId);
@@ -97,4 +81,21 @@ public class ContatoService {
         return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
 
+
+    //NAO ESTAMOS CHAMANDO AINDA:
+    public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
+        Specification<Contato> spec = Specification
+                                               .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
+                                               .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
+        List<Contato> contatos = contatoRepo.findAll(spec);
+
+        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
+    }
+
+
+    public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
+        Optional<Contato> contato = contatoRepo.findById(contatoId);
+
+        return contato.map(ContatoRespostaDTO::new);
+    }
 }

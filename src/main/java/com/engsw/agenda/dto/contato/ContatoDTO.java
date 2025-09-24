@@ -17,4 +17,9 @@ public class ContatoDTO {
     public Contato transformaParaObj(Agenda agenda){
         return new Contato(nome, telefone, agenda);
     }
+
+    public ContatoDTO(String nome, String telefone) {
+        this.nome = nome;
+        this.telefone = telefone;
+    }
 }
