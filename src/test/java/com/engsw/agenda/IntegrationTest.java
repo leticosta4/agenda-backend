@@ -56,8 +56,7 @@ public class IntegrationTest {
     }
 
     @Test
-    void testeCriarContato_naAgenda() throws Exception {
-        // 1) cria agenda
+    void testeAddContatoAgenda() throws Exception {
         Map<String, Object> agendaPayload = Map.of("nome", "agenda para contato");
         String agendaJson = objectMapper.writeValueAsString(agendaPayload);
 
@@ -72,7 +71,6 @@ public class IntegrationTest {
         Object agendaId = agendaResp.get("id");
         assertThat(agendaId).isNotNull();
 
-        // 2) cria contato na agenda (endpoint: POST /agenda/{idAgenda})
         Map<String, Object> contatoPayload = Map.of(
                 "nome", "Contato Integra",
                 "telefone", "99999999999"
