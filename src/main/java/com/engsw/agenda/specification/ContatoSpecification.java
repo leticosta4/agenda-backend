@@ -1,4 +1,6 @@
 package com.engsw.agenda.specification;
+import java.util.UUID;
+
 import org.springframework.data.jpa.domain.Specification;
 import com.engsw.agenda.model.Contato;
 
@@ -18,7 +20,16 @@ public class ContatoSpecification {
             if (telefone == null || telefone.isEmpty()) {
                 return cb.conjunction();
             }
-            return cb.like(cb.lower(root.get("nome")), "%" + telefone.toLowerCase() + "%");
+            return cb.like(cb.lower(root.get("telefone")), "%" + telefone.toLowerCase() + "%");
+        };
+    }
+
+    public static Specification<Contato> filtrarPorAgendaId(UUID agendaId) {
+        return (root, query, cb) -> {
+            if (agendaId == null) {
+                return cb.conjunction();
+            }
+            return cb.equal(root.get("agenda").get("id"), agendaId);
         };
     }
 }
