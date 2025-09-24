@@ -83,10 +83,18 @@ public class ContatoService {
         contatoRepo.deleteById(contatoId);
     }
 
-    public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID idAgenda){
-       List<Contato> contatos = contatoRepo.findByAgendaId(idAgenda);
+    public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID agendaId, String nome, String telefone){
+        Specification<Contato> spec = ContatoSpecification.filtrarPorAgendaId(agendaId);
 
-       return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
+        if ((nome != null && !nome.isEmpty()) || (telefone != null && !telefone.isEmpty())) {
+            spec = spec.and(
+                ContatoSpecification.filtrarPorNome(nome)
+                    .or(ContatoSpecification.filtrarPorTelefone(telefone))
+            );
+        }
+
+        List<Contato> contatos = contatoRepo.findAll(spec);
+        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
 
 }
