@@ -3,6 +3,8 @@ package com.engsw.agenda.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +43,7 @@ public class Contato {
 
     @ManyToOne
     @JoinColumn(name = "agenda_id", nullable = false)
+    @JsonBackReference
     private Agenda agenda;
 
     public Contato(String nome, String telefone, Agenda agenda){
