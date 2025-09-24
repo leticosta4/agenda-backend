@@ -2,6 +2,8 @@ package com.engsw.agenda.model;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,5 +34,6 @@ public class Agenda {
     }
 
     @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Collection<Contato> contatos;
 }
