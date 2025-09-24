@@ -55,7 +55,11 @@ public class ContatoController {
                .orElse(ResponseEntity.notFound().build());
     }
 
+<<<<<<< Updated upstream
     @PatchMapping("/{contatoId}")
+=======
+    @PutMapping("/{contatoId}")
+>>>>>>> Stashed changes
     public ResponseEntity<ContatoRespostaDTO> editarContato(@PathVariable UUID contatoId, @RequestBody ContatoDTO contatoNovo){
         ContatoRespostaDTO contatoEditado = contatoService.editarContato(contatoId, contatoNovo);
         return ResponseEntity.ok(contatoEditado);
