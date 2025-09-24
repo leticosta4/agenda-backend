@@ -44,7 +44,7 @@ public class IntegrationTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 
-    @Test
+    @Test //ok
     void testeCriarAgenda() throws Exception {
         Map<String, Object> payload = Map.of("nome", "agenda test");
         String json = objectMapper.writeValueAsString(payload);
@@ -58,7 +58,7 @@ public class IntegrationTest {
     }
 
     
-    @Test
+    @Test //ok
     void testeEntrarAgenda() throws Exception {
         String nome = "agenda-entrar-test";
         String agendaId = createAgenda(nome);
@@ -70,7 +70,7 @@ public class IntegrationTest {
                 .andExpect(jsonPath("$.nome").value(nome));
     }
 
-    @Test
+    @Test //ok
     void testeAddCriarContatoAgenda() throws Exception {
         String agendaId = createAgenda("agenda para contato");
 
@@ -148,6 +148,43 @@ public class IntegrationTest {
         List<Map<String,Object>> contatosAfter = objectMapper.readValue(afterBody, List.class);
         boolean stillExists = contatosAfter.stream().anyMatch(c -> contatoId.equals(String.valueOf(c.get("id"))));
         assertTrue(!stillExists, "Contato deve ter sido removido da agenda");
+    }
+
+    @Test
+    void testeDeletarVariosContatosPorNome() throws Exception {
+        String agendaId = createAgenda("agenda para deletar varios contatos");
+        String contatoId1 = createContact(agendaId, Map.of(
+                "nome", "Contato Comum 1",
+                "telefone", "11111111111"
+        ));
+        String contatoId2 = createContact(agendaId, Map.of(
+                "nome", "Contato Comum 2",
+                "telefone", "22222222222"
+        ));
+        String contatoId3 = createContact(agendaId, Map.of(
+                "nome", "Outro Contato",
+                "telefone", "33333333333"
+        ));
+
+        // DELETE /agenda/{idAgenda}/contatos?nome=Contato Comum
+        mockMvc.perform(delete("/agenda/{idAgenda}/contatos/remover", agendaId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"nome\": \"Contato Comum\"}"))
+                .andExpect(status().isNoContent());
+
+        // confirmar remoção via GET /agenda/{idAgenda}/contatos
+        MvcResult getAfter = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String afterBody = getAfter.getResponse().getContentAsString();
+        List<Map<String,Object>> contatosAfter = objectMapper.readValue(afterBody, List.class);
+        boolean stillExists1 = contatosAfter.stream().anyMatch(c -> contatoId1.equals(String.valueOf(c.get("id"))));
+        boolean stillExists2 = contatosAfter.stream().anyMatch(c -> contatoId2.equals(String.valueOf(c.get("id"))));
+        boolean stillExists3 = contatosAfter.stream().anyMatch(c -> contatoId3.equals(String.valueOf(c.get("id"))));
+        assertTrue(!stillExists1, "Contato 1 deve ter sido removido da agenda");
+        assertTrue(!stillExists2, "Contato 2 deve ter sido removido da agenda");
+        assertTrue(stillExists3, "Outro Contato não deve ter sido removido da agenda");
     }
 
     
