@@ -20,7 +20,7 @@ public class ContatoSpecification {
             if (telefone == null || telefone.isEmpty()) {
                 return cb.conjunction();
             }
-            return cb.like(cb.lower(root.get("nome")), "%" + telefone.toLowerCase() + "%"); //Verificar se é telefone ou nome no attribute
+            return cb.like(cb.lower(root.get("telefone")), "%" + telefone.toLowerCase() + "%"); //Verificar se é telefone ou nome no attribute
         };
     }
 
