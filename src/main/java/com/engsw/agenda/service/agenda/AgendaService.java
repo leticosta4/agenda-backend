@@ -31,7 +31,7 @@ public class AgendaService {
 
 
     @Transactional
-    public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
+    public Agenda criarAgenda(AgendaDTO dto){
         Agenda agenda = dto.transformaParaObj();
         Agenda agendaSalva = agendaRepo.save(agenda); 
 
