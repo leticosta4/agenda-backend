@@ -91,7 +91,7 @@ public class AgendaController {
 
 
     @DeleteMapping("/{idAgenda}/contatos/remover")
-    public ResponseEntity<Void> removerContatos(@PathVariable UUID idAgenda, @ParameterObject @ModelAttribute ContatoFiltroDTO filtro){
+    public ResponseEntity<Void> removerContatos(@PathVariable UUID idAgenda, @RequestBody ContatoFiltroDTO filtro){
         contatoService.excluirContatosPorNome(idAgenda,filtro.getNome());
         return ResponseEntity.noContent().build();
     }
