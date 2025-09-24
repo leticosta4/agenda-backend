@@ -3,9 +3,11 @@ package com.engsw.agenda.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.engsw.agenda.dto.AgendaDTO;
+import com.engsw.agenda.dto.contato.ContatoFiltroDTO;
 import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.service.ContatoService;
@@ -56,8 +59,8 @@ public class AgendaController {
 
 
     @GetMapping("/{idAgenda}/contatos")
-    public ResponseEntity<List<ContatoRespostaDTO>> buscarContatosAgenda(@PathVariable UUID idAgenda){
-        List<ContatoRespostaDTO> contatos  = contatoService.buscarContatosPorAgenda(idAgenda);
+    public ResponseEntity<List<ContatoRespostaDTO>> buscarContatosAgenda(@PathVariable UUID idAgenda, @ParameterObject @ModelAttribute ContatoFiltroDTO filtro){
+        List<ContatoRespostaDTO> contatos  = contatoService.buscarContatosPorAgenda(idAgenda, filtro.getNome(), filtro.getTelefone());
         return ResponseEntity.ok(contatos);
 
 
