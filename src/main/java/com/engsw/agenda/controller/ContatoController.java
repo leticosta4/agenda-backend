@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.engsw.agenda.dto.contato.*;
-import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.service.ContatoService;
 import com.engsw.agenda.service.agenda.AgendaService;
 
@@ -39,12 +38,10 @@ public class ContatoController {
 
     @PostMapping("/{agendaId}")
     public ResponseEntity<ContatoRespostaDTO> criarContato(@PathVariable UUID agendaId, @Valid @RequestBody ContatoDTO contatoNovo) {
-        ContatoRespostaDTO contatoCriado = contatoService.criarContato(contatoNovo, agendaId);
-        
-        //chama o metodo de criar de agenda service
-        agendaService.adicionarContatoAgenda(agendaId, contatoNovo);
+        ContatoRespostaDTO cttCriado = new ContatoRespostaDTO(contatoService.criarContato(contatoNovo, agendaId));
+        agendaService.adicionarContatoAgenda(agendaId, contatoNovo); //add na agenda (list ou map) em memoria
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(contatoCriado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cttCriado);
     }
     
 

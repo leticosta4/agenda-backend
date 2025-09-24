@@ -12,7 +12,7 @@ import com.engsw.agenda.dto.contato.ContatoDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
-import com.engsw.agenda.repository.ContatoRepository;
+import com.engsw.agenda.service.ContatoService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -24,7 +24,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
-    @Autowired private ContatoRepository contatoRepo;
+    @Autowired private ContatoService contatoService;
 
     int TIPO_AGENDA = 1;
 
@@ -60,19 +60,21 @@ public class AgendaService {
         return agenda;
     }
 
-//CONSERTAR O ADD E O REMOVER
+//fazer um editar contato nas listas em memoria
 
     @Transactional
-    public void adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
+    public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
-        Contato novoContato = contatoDTO.transformaParaObj(agenda);
+        Contato contatoSalvo = contatoService.criarContato(contatoDTO, idAgenda);
 
         FabricaAgenda fabrica = FabricaAgenda.getInstancia();
         IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
-        gerenciador.adicionarContato(agenda.getContatos(), novoContato);
+        gerenciador.adicionarContato(agenda.getContatos(), contatoSalvo);
+
+        return contatoSalvo;
     }
 
     @Transactional
@@ -80,10 +82,10 @@ public class AgendaService {
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
-        if (!contatoRepo.existsById(idContato)) {
-            throw new EntityNotFoundException("Contato com ID " + idContato + " não encontrado");
+        if (agenda.getContatos() != null) {
+            contatoService.excluirContato(idContato); //verificação da existencia do contato la
         }
-        
+
         FabricaAgenda fabrica = FabricaAgenda.getInstancia();
         IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
