@@ -28,18 +28,32 @@ public class AgendaMap implements IAgenda{
     }
 
     @Override
-    public void adicionarContato(ContatoDTO ctt, Agenda ag) {
-        if(this.listaContato != null){
-            Contato novoContato = ctt.transformaParaObj(ag);
-            this.listaContato.put(novoContato.getId(), novoContato);
+    public void adicionarContato(Collection<Contato> contatos, Contato contato) {
+        if (contatos != null) {
+            contatos.add(contato);
         }
     }
 
     @Override
-    public void removerContato(UUID cttId) {
-        if(this.listaContato != null){
-            this.listaContato.remove(UUID.randomUUID());
-            this.listaContato.remove(cttId);
+    public void removerContato(Collection<Contato> contatos, UUID cttId) {
+        if (contatos != null) {
+            contatos.removeIf(contato -> contato.getId().equals(cttId));
         }
     }
+
+    // @Override
+    // public void adicionarContato(ContatoDTO ctt, Agenda ag) {
+    //     if(this.listaContato != null){
+    //         Contato novoContato = ctt.transformaParaObj(ag);
+    //         this.listaContato.put(novoContato.getId(), novoContato);
+    //     }
+    // }
+
+    // @Override
+    // public void removerContato(UUID cttId) {
+    //     if(this.listaContato != null){
+    //         this.listaContato.remove(UUID.randomUUID());
+    //         this.listaContato.remove(cttId);
+    //     }
+    // }
 }

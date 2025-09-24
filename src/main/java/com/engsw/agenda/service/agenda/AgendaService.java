@@ -26,6 +26,8 @@ public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
     @Autowired private ContatoService contatoService;
 
+    int TIPO_AGENDA = 1;
+
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
         Agenda agenda = dto.transformaParaObj();
@@ -67,25 +69,27 @@ public class AgendaService {
 
         Contato contatoSalvo = contatoService.criarContato(contatoDTO, idAgenda);
 
-        if (agenda.getContatos() != null) {
-            agenda.getContatos().add(contatoSalvo);
-        }
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
+
+        gerenciador.adicionarContato(agenda.getContatos(), contatoSalvo);
 
         return contatoSalvo;
     }
 
     @Transactional
-    public void removerContatoAgenda(UUID idAgenda, UUID idContato){
+    public void removerContatoAgenda(UUID idAgenda, UUID idContato) {
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
         if (agenda.getContatos() != null) {
             contatoService.excluirContato(idContato); //verificação da existencia do contato la
-
-            // Isso usará a lógica corrigida (removeIf para List ou remove(key) para Map)
-            agenda.getContatos().removeIf(contato -> contato.getId().equals(idContato));
         }
 
+        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
+
+        gerenciador.removerContato(agenda.getContatos(), idContato);
     }
 
     

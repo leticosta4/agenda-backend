@@ -11,6 +11,9 @@ public interface IAgenda {
     //Collection<Contato> getListaContato();
     public Collection<Contato> criarLista();
 
-    public void adicionarContato(ContatoDTO ctt, Agenda ag);
-    public void removerContato(UUID cttId);
+    // public void adicionarContato(ContatoDTO ctt, Agenda ag);
+    // public void removerContato(UUID cttId);
+
+    public void adicionarContato(Collection<Contato> contatos, Contato contato);
+    public void removerContato(Collection<Contato> contatos, UUID cttId);
 }
