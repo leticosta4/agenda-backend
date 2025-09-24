@@ -27,33 +27,35 @@ public class AgendaService {
     @Autowired private ContatoService contatoService;
 
     int TIPO_AGENDA = 1;
+    FabricaAgenda fabrica = FabricaAgenda.getInstancia();
+    IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
         Agenda agenda = dto.transformaParaObj();
         Agenda agendaSalva = agendaRepo.save(agenda); 
 
-        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
-        IAgenda gerenciador = fabrica.criarListaAgenda(tipoAgenda);
-
         agendaSalva.setContatos(gerenciador.criarLista());
 
         return agendaSalva;         
     }
 
+
     public Optional<Agenda> retornaAgendaUnicaById(UUID idAgenda){ //rever o tipo do retorno
         return agendaRepo.findById(idAgenda);
     }
+
 
     public Agenda retornaAgendaUnicaByName(String nomeAgenda){ //rever o tipo do retorno
         return agendaRepo.findByNome(nomeAgenda);
     }
 
+
     public Agenda editarAgenda(UUID idAgenda, String novoNome){
         Agenda agenda = agendaRepo.findById(idAgenda)
             .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
 
-        if (novoNome != null && !novoNome.isBlank()) {
+        if(novoNome != null && !novoNome.isBlank()) {
             agenda.setNome(novoNome);
             agendaRepo.save(agenda);
         }
@@ -69,13 +71,11 @@ public class AgendaService {
 
         Contato contatoSalvo = contatoService.criarContato(contatoDTO, idAgenda);
 
-        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
-        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
-
         gerenciador.adicionarContato(agenda.getContatos(), contatoSalvo);
 
         return contatoSalvo;
     }
+
 
     @Transactional
     public void removerContatoAgenda(UUID idAgenda, UUID idContato) {
@@ -86,11 +86,6 @@ public class AgendaService {
             contatoService.excluirContato(idContato); //verificação da existencia do contato la
         }
 
-        FabricaAgenda fabrica = FabricaAgenda.getInstancia();
-        IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
-
         gerenciador.removerContato(agenda.getContatos(), idContato);
     }
-
-    
 }
