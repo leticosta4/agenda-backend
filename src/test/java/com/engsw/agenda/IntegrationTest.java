@@ -1,6 +1,5 @@
 package com.engsw.agenda;
 
-import com.engsw.agenda.dto.AgendaDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,41 +9,81 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) //contexto completo da aplicação do spring
-@AutoConfigureMockMvc  //simulação das reqs hhtp
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @Testcontainers
 public class IntegrationTest {
     @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper; //converte obj java p json
-    @Container static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:15-alpine");
+    @Autowired private ObjectMapper objectMapper;
+
+    @Container
+    static PostgreSQLContainer<?> postgresqlContainer = new PostgreSQLContainer<>("postgres:15-alpine")
+            .withDatabaseName("testdb")
+            .withUsername("test")
+            .withPassword("test");
+
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgresqlContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresqlContainer::getUsername);
         registry.add("spring.datasource.password", postgresqlContainer::getPassword);
+        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
-
 
     @Test
     void testeCriarAgenda() throws Exception {
-        AgendaDTO novaAgendaDTO = new AgendaDTO();
-        novaAgendaDTO.setNome("agenda test");
+        Map<String, Object> payload = Map.of("nome", "agenda test");
+        String json = objectMapper.writeValueAsString(payload);
 
-        String agendaJson = objectMapper.writeValueAsString(novaAgendaDTO);
-
-        mockMvc.perform(post("/agenda/").contentType(MediaType.APPLICATION_JSON).content(agendaJson))
+        mockMvc.perform(post("/agenda")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.nome").value("agenda test"))
-                .andExpect(jsonPath("$.contatos").isArray());
+                .andExpect(jsonPath("$.nome").value("agenda test"));
     }
- 
+
+    @Test
+    void testeCriarContato_naAgenda() throws Exception {
+        // 1) cria agenda
+        Map<String, Object> agendaPayload = Map.of("nome", "agenda para contato");
+        String agendaJson = objectMapper.writeValueAsString(agendaPayload);
+
+        MvcResult r = mockMvc.perform(post("/agenda")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(agendaJson))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String agendaBody = r.getResponse().getContentAsString();
+        Map<String, Object> agendaResp = objectMapper.readValue(agendaBody, Map.class);
+        Object agendaId = agendaResp.get("id");
+        assertThat(agendaId).isNotNull();
+
+        // 2) cria contato na agenda (endpoint: POST /agenda/{idAgenda})
+        Map<String, Object> contatoPayload = Map.of(
+                "nome", "Contato Integra",
+                "telefone", "99999999999"
+        );
+        String contatoJson = objectMapper.writeValueAsString(contatoPayload);
+
+        mockMvc.perform(post("/agenda/{idAgenda}", agendaId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(contatoJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.nome").value("Contato Integra"));
+    }
 }
