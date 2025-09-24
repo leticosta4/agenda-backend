@@ -67,6 +67,11 @@ public class ContatoService {
         contatoRepo.deleteById(contatoId);
     }
 
+    @Transactional
+    public void excluirContatosPorNome(UUID idAgenda, String nome){
+        contatoRepo.deleteManyByNome(idAgenda.toString(),nome);
+    }
+
 
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID agendaId, String nome, String telefone){
         Specification<Contato> spec = ContatoSpecification.filtrarPorAgendaId(agendaId);
