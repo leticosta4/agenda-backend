@@ -19,7 +19,7 @@ public class AgendaList implements IAgenda{
     
     private List<Contato> listaContato;
 
-    //adicionar exceptions no add e remover
+    //talvez adicionar exceptions no add e remover
 
     @Override
     public Collection<Contato> criarLista() {

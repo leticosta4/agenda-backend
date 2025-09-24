@@ -62,16 +62,11 @@ public class AgendaService {
         return agenda;
     }
 
-//fazer um editar contato nas listas em memoria
-
     @Transactional
     public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
-        Agenda agenda = agendaRepo.findById(idAgenda)
-            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
-
         Contato contatoSalvo = contatoService.criarContato(contatoDTO, idAgenda);
 
-        gerenciador.adicionarContato(agenda.getContatos(), contatoSalvo);
+        gerenciador.adicionarContato(contatoSalvo.getAgenda().getContatos(), contatoSalvo);
 
         return contatoSalvo;
     }
@@ -88,4 +83,6 @@ public class AgendaService {
 
         gerenciador.removerContato(agenda.getContatos(), idContato);
     }
+
+    //o editar contato em agenda 
 }

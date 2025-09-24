@@ -18,11 +18,10 @@ import lombok.NoArgsConstructor;
 public class AgendaMap implements IAgenda{
     private HashMap<UUID, Contato> listaContato;
 
-    //adicionar os exceptions no add e no remover
+    //talvez adicionar os exceptions no add e no remover
 
     @Override
     public Collection<Contato> criarLista() {
-        // this.listaContato = new HashMap<String, Contato>();
         this.listaContato = new HashMap<UUID, Contato>();
         return this.listaContato.values();
     }
