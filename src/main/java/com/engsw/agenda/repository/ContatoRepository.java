@@ -19,6 +19,6 @@ public interface ContatoRepository extends JpaRepository<Contato, UUID>, JpaSpec
     void deleteById(UUID idContato);
 
     @Modifying
-    @Query("DELETE FROM Contato c WHERE c.agenda.id = :idAgenda AND c.nome LIKE CONCAT('%', :nome, '%')")
-    void deleteManyByNome(@Param("idAgenda") String idAgenda, @Param("nome") String nome);
+    @Query("DELETE FROM Contato c WHERE c.agenda.id = :idAgenda AND c.nome LIKE CONCAT(:nome, '%')")
+    void deleteManyByNome(@Param("idAgenda") UUID idAgenda, @Param("nome") String nome);
 }

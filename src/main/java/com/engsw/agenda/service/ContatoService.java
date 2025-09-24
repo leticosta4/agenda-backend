@@ -69,7 +69,7 @@ public class ContatoService {
 
     @Transactional
     public void excluirContatosPorNome(UUID idAgenda, String nome){
-        contatoRepo.deleteManyByNome(idAgenda.toString(),nome);
+        contatoRepo.deleteManyByNome(idAgenda,nome);
     }
 
 
