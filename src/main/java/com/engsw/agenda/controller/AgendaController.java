@@ -36,10 +36,10 @@ public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
-    @PostMapping("/") //essa barra poderia sair também
+    @PostMapping
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) {
         Agenda nova = agendaService.criarAgenda(agendaDTO, 0); //tb estamos passando essa constante no service >> REVISAR
-        return ResponseEntity.ok(nova);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }
 
 
