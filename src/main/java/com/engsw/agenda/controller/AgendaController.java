@@ -80,6 +80,12 @@ public class AgendaController {
         return ResponseEntity.ok(contatoEditado);
     }
 
+    @GetMapping("/{idAgenda}/{contatoId}") 
+    public ResponseEntity<ContatoRespostaDTO> buscarPorId(@PathVariable UUID idAgenda, @PathVariable UUID contatoId){
+        return contatoService.buscarContatoPorId(contatoId)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
+    }
 
     //não ta sendo usado no momento
     @PatchMapping("/{idAgenda}")
@@ -88,14 +94,4 @@ public class AgendaController {
 
         return ResponseEntity.ok(novaAgenda);
     }
-
-
-    //adaptar talvez o endpoint de acesso unico de contato
-    // @GetMapping("/{contatoId}") 
-    // public ResponseEntity<ContatoRespostaDTO> buscarPorId(@PathVariable UUID contatoId){
-    //     return contatoService.buscarContatoPorId(contatoId)
-    //            .map(ResponseEntity::ok)
-    //            .orElse(ResponseEntity.notFound().build());
-    // }
-
 }

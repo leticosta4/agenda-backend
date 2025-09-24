@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,13 +57,12 @@ public class IntegrationTest {
                 .andExpect(jsonPath("$.nome").value("agenda test"));
     }
 
+    
     @Test
     void testeEntrarAgenda() throws Exception {
-        // cria agenda com nome conhecido
         String nome = "agenda-entrar-test";
         String agendaId = createAgenda(nome);
 
-        // chama /agenda/entrar?nomeAgenda=nome
         mockMvc.perform(get("/agenda/entrar").param("nomeAgenda", nome))
                 .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
@@ -73,7 +71,7 @@ public class IntegrationTest {
     }
 
     @Test
-    void testeCriarContato_naAgenda() throws Exception {
+    void testeAddCriarContatoAgenda() throws Exception {
         String agendaId = createAgenda("agenda para contato");
 
         Map<String, Object> contatoPayload = Map.of(
@@ -82,7 +80,6 @@ public class IntegrationTest {
         );
         String contatoId = createContact(agendaId, contatoPayload);
 
-        // verificar via GET /agenda/{idAgenda}/contatos
         MvcResult getContatos = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -93,8 +90,9 @@ public class IntegrationTest {
         assertTrue(contains, "Agenda deve conter o contato criado");
     }
 
+
     @Test
-    void testeEditarContato_naAgenda_usandoGetPorId() throws Exception {
+    void testeEditarContatoAgenda() throws Exception {
         String agendaId = createAgenda("agenda para editar contato");
         String contatoId = createContact(agendaId, Map.of(
                 "nome", "Contato Para Editar",
@@ -102,7 +100,7 @@ public class IntegrationTest {
         ));
 
         // 1) GET por id do contato (endpoint: GET /agenda/{contatoId})
-        MvcResult getContatoById = mockMvc.perform(get("/agenda/{contatoId}", contatoId))
+        MvcResult getContatoById = mockMvc.perform(get("/agenda/{agendaId}/{contatoId}", agendaId, contatoId))
                 .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
@@ -110,16 +108,14 @@ public class IntegrationTest {
         String contatoBody = getContatoById.getResponse().getContentAsString();
         Map<String,Object> contatoObj = objectMapper.readValue(contatoBody, Map.class);
 
-        // montar payload de atualização a partir do contato retornado (mantém campos obrigatórios)
+
         Map<String,Object> updateMap = new java.util.HashMap<>(contatoObj);
         updateMap.put("nome", "Contato Editado via GET");
         updateMap.put("telefone", "22222222222");
-        // remover 'id' se o DTO de entrada não espera o campo id
-        updateMap.remove("id");
+        updateMap.remove("id"); //por causa do dto
 
         String updateJson = objectMapper.writeValueAsString(updateMap);
 
-        // 2) PATCH /agenda/{idAgenda}/{contatoId}
         mockMvc.perform(patch("/agenda/{idAgenda}/{contatoId}", agendaId, contatoId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateJson))
@@ -131,7 +127,7 @@ public class IntegrationTest {
     }
 
     @Test
-    void testeDeletarContato_naAgenda() throws Exception {
+    void testeDeletarContato() throws Exception {
         String agendaId = createAgenda("agenda para deletar contato");
         String contatoId = createContact(agendaId, Map.of(
                 "nome", "Contato Para Deletar",
@@ -154,7 +150,8 @@ public class IntegrationTest {
         assertTrue(!stillExists, "Contato deve ter sido removido da agenda");
     }
 
-    // helpers
+    
+    // "mocks"
     private String createAgenda(String nome) throws Exception {
         Map<String, Object> agendaPayload = Map.of("nome", nome);
         String agendaJson = objectMapper.writeValueAsString(agendaPayload);
@@ -175,14 +172,14 @@ public class IntegrationTest {
     private String createContact(String agendaId, Map<String, Object> contatoPayload) throws Exception {
         String contatoJson = objectMapper.writeValueAsString(contatoPayload);
 
-        // cria contato (POST)
+        //cria ctt
         mockMvc.perform(post("/agenda/{idAgenda}", agendaId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(contatoJson))
                 .andExpect(status().isCreated())
                 .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print());
 
-        // polling: busca contatos e aguarda até encontrar o contato criado com id não-nulo
+        //busca ctts e aguarda ate encontrar o ctt criado com id n nulo
         String nome = String.valueOf(contatoPayload.get("nome"));
         String telefone = contatoPayload.get("telefone") != null ? String.valueOf(contatoPayload.get("telefone")) : null;
 
@@ -196,7 +193,7 @@ public class IntegrationTest {
             String body = getContatos.getResponse().getContentAsString();
             List<Map<String,Object>> contatos = objectMapper.readValue(body, List.class);
 
-            // se existir qualquer contato com id == null, aguarda e tenta novamente
+            //se tiver qualquer ctt com id == null, aguarda e tenta novamente
             boolean anyNullId = contatos.stream().anyMatch(c -> c.get("id") == null);
             if (anyNullId) {
                 Thread.sleep(delayMs);
