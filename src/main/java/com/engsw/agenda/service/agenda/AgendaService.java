@@ -29,7 +29,7 @@ public class AgendaService {
     FabricaAgenda fabrica = FabricaAgenda.getInstancia();
     IAgenda gerenciador = fabrica.criarListaAgenda(TIPO_AGENDA);
 
-    
+
     @Transactional
     public Agenda criarAgenda(AgendaDTO dto, int tipoAgenda){
         Agenda agenda = dto.transformaParaObj();
@@ -87,5 +87,22 @@ public class AgendaService {
         gerenciador.removerContato(idContato);
     }
 
-    //o editar contato em agenda 
+
+    @Transactional
+    public ContatoRespostaDTO editarContatoAgenda(UUID idAgenda, UUID idContato, ContatoDTO contatoNovo) {
+        Agenda agenda = agendaRepo.findById(idAgenda)
+            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+
+        Contato cttEditado = new Contato();
+
+        if (agenda.getContatos() != null) {
+            cttEditado = contatoService.editarContato(idContato, contatoNovo);
+        }
+
+        gerenciador.editarContato(cttEditado);
+
+        return new ContatoRespostaDTO(cttEditado);       
+    }
+
+    //fazer talvez o acesso unico de ctt
 }

@@ -40,4 +40,11 @@ public class AgendaMap implements IAgenda{
             this.listaContato.remove(cttId);
         }
     }
+
+    @Override
+    public void editarContato(Contato ctt) {
+        if(this.listaContato != null){
+            this.listaContato.put(ctt.getId(), ctt);
+        }
+    }
 }

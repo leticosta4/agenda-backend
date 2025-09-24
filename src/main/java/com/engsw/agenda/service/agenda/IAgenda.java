@@ -12,5 +12,6 @@ public interface IAgenda {
 
     public void adicionarContato(ContatoDTO ctt, Agenda ag);
     public void removerContato(UUID cttId);
+    public void editarContato(Contato ctt);
 
 }

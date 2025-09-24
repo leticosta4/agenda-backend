@@ -24,7 +24,7 @@ public class ContatoService {
     @Autowired private ContatoRepository contatoRepo;
     @Autowired private AgendaRepository agendaRepo;
 
-    //OK
+
     @Transactional
     public Contato criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
@@ -39,14 +39,11 @@ public class ContatoService {
         Contato novoSalvo = contatoRepo.save(dto.transformaParaObj(agenda));
         return novoSalvo;
     }
-    
-    //FALTA ADAPTAR
-    @Transactional
-    public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
-        Contato contato = 
-                        contatoRepo.findById(contatoId)
-                        .orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
 
+    
+    @Transactional
+    public Contato editarContato(UUID contatoId, ContatoDTO contatoNovo){
+        Contato contato = contatoRepo.findById(contatoId).orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
 
         if (contatoNovo.getNome() != null) {
             contato.setNome(contatoNovo.getNome());
@@ -56,10 +53,10 @@ public class ContatoService {
         }
         contato.setModificadoEm(LocalDateTime.now());
         contatoRepo.save(contato);
-        return new ContatoRespostaDTO(contato);
+        return contato;
     }
 
-    //OK
+
     @Transactional
     public void excluirContato(UUID contatoId){
         if(!contatoRepo.existsById(contatoId)){
@@ -69,7 +66,7 @@ public class ContatoService {
         contatoRepo.deleteById(contatoId);
     }
 
-    //OK
+
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID agendaId, String nome, String telefone){
         Specification<Contato> spec = ContatoSpecification.filtrarPorAgendaId(agendaId);
 

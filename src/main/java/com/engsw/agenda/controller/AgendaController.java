@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/agenda")
-public class AgendaController {  //ESSE VAI SER O MAIN CONTROLLER
+public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
@@ -57,6 +57,29 @@ public class AgendaController {  //ESSE VAI SER O MAIN CONTROLLER
     }
 
 
+    @PostMapping("/{idAgenda}")
+    public ResponseEntity<ContatoRespostaDTO> criarContato(@PathVariable UUID idAgenda, @Valid @RequestBody ContatoDTO contatoNovo) {
+        ContatoRespostaDTO cttCriado = agendaService.adicionarContatoAgenda(idAgenda, contatoNovo); //manipula o gerenciador (list/map) + service de contato (banco)
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(cttCriado);
+    }
+    
+
+    @DeleteMapping("/{idAgenda}/{contatoId}")
+    public ResponseEntity<Void> excluirContato(@PathVariable UUID idAgenda, @PathVariable UUID contatoId){
+        agendaService.removerContatoAgenda(idAgenda, contatoId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PatchMapping("/{idAgenda}/{contatoId}")
+    public ResponseEntity<ContatoRespostaDTO> editarContato(@PathVariable UUID idAgenda, @PathVariable UUID contatoId, @RequestBody ContatoDTO contatoNovo){
+        ContatoRespostaDTO contatoEditado = agendaService.editarContatoAgenda(idAgenda, contatoId, contatoNovo);
+        return ResponseEntity.ok(contatoEditado);
+    }
+
+
     //não ta sendo usado no momento
     @PatchMapping("/{idAgenda}")
     public ResponseEntity<Agenda> editarAgenda(@PathVariable UUID idAgenda, @RequestParam String nomeAgendaNovo){
@@ -65,23 +88,13 @@ public class AgendaController {  //ESSE VAI SER O MAIN CONTROLLER
         return ResponseEntity.ok(novaAgenda);
     }
 
-    
-    @PostMapping("/{idAgenda}")
-    public ResponseEntity<ContatoRespostaDTO> criarContato(@PathVariable UUID agendaId, @Valid @RequestBody ContatoDTO contatoNovo) {
-        ContatoRespostaDTO cttCriado = agendaService.adicionarContatoAgenda(agendaId, contatoNovo); //manipula o gerenciador (list/map) + service de contato (banco)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(cttCriado);
-    }
-    
-
-    @DeleteMapping("/{idAgenda}/{contatoId}")
-    public ResponseEntity<Void> excluirContato(@PathVariable UUID agendaId, @PathVariable UUID contatoId){
-        agendaService.removerContatoAgenda(agendaId, contatoId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    //controllers que faltam ser adaptados:
-    //editar contato
+    //adaptar talvez o endpoint de acesso unico de contato
+    // @GetMapping("/{contatoId}") 
+    // public ResponseEntity<ContatoRespostaDTO> buscarPorId(@PathVariable UUID contatoId){
+    //     return contatoService.buscarContatoPorId(contatoId)
+    //            .map(ResponseEntity::ok)
+    //            .orElse(ResponseEntity.notFound().build());
+    // }
 
 }
