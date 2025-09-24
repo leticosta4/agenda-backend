@@ -36,9 +36,10 @@ public class AgendaController {
     @Autowired private AgendaService agendaService;
     @Autowired private ContatoService contatoService;
 
+
     @PostMapping
     public ResponseEntity<Agenda> criarAgenda(@RequestBody AgendaDTO agendaDTO) {
-        Agenda nova = agendaService.criarAgenda(agendaDTO, 0); //tb estamos passando essa constante no service >> REVISAR
+        Agenda nova = agendaService.criarAgenda(agendaDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }
 
