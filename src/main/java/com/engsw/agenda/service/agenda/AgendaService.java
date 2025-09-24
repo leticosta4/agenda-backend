@@ -66,7 +66,7 @@ public class AgendaService {
     public Contato adicionarContatoAgenda(UUID idAgenda, ContatoDTO contatoDTO ){
         Contato contatoSalvo = contatoService.criarContato(contatoDTO, idAgenda);
 
-        gerenciador.adicionarContato(contatoSalvo.getAgenda().getContatos(), contatoSalvo);
+        gerenciador.adicionarContato(contatoDTO, contatoSalvo.getAgenda());
 
         return contatoSalvo;
     }
@@ -81,7 +81,7 @@ public class AgendaService {
             contatoService.excluirContato(idContato); //verificação da existencia do contato la
         }
 
-        gerenciador.removerContato(agenda.getContatos(), idContato);
+        gerenciador.removerContato(idContato);
     }
 
     //o editar contato em agenda 

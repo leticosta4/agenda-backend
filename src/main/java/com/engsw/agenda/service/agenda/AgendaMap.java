@@ -1,7 +1,6 @@
 package com.engsw.agenda.service.agenda;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Collection;
 import java.util.UUID;
 
 import com.engsw.agenda.dto.contato.ContatoDTO;
@@ -27,32 +26,18 @@ public class AgendaMap implements IAgenda{
     }
 
     @Override
-    public void adicionarContato(Collection<Contato> contatos, Contato contato) {
-        if (contatos != null) {
-            contatos.add(contato);
+    public void adicionarContato(ContatoDTO ctt, Agenda ag) {
+        if(this.listaContato != null){
+            Contato novoContato = ctt.transformaParaObj(ag);
+            this.listaContato.put(novoContato.getId(), novoContato);
         }
     }
 
     @Override
-    public void removerContato(Collection<Contato> contatos, UUID cttId) {
-        if (contatos != null) {
-            contatos.removeIf(contato -> contato.getId().equals(cttId));
+    public void removerContato(UUID cttId) {
+        if(this.listaContato != null){
+            this.listaContato.remove(UUID.randomUUID());
+            this.listaContato.remove(cttId);
         }
     }
-
-    // @Override
-    // public void adicionarContato(ContatoDTO ctt, Agenda ag) {
-    //     if(this.listaContato != null){
-    //         Contato novoContato = ctt.transformaParaObj(ag);
-    //         this.listaContato.put(novoContato.getId(), novoContato);
-    //     }
-    // }
-
-    // @Override
-    // public void removerContato(UUID cttId) {
-    //     if(this.listaContato != null){
-    //         this.listaContato.remove(UUID.randomUUID());
-    //         this.listaContato.remove(cttId);
-    //     }
-    // }
 }

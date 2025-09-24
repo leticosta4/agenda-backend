@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Setter
 @NoArgsConstructor
 public class AgendaList implements IAgenda{
-    
     private List<Contato> listaContato;
 
     //talvez adicionar exceptions no add e remover
@@ -28,30 +27,16 @@ public class AgendaList implements IAgenda{
     }
 
     @Override
-    public void adicionarContato(Collection<Contato> contatos, Contato contato) {
-        if (contatos != null) {
-            contatos.add(contato);
+    public void adicionarContato(ContatoDTO ctt, Agenda ag) {
+        if(this.listaContato != null){
+            this.listaContato.add(ctt.transformaParaObj(ag));
         }
     }
 
     @Override
-    public void removerContato(Collection<Contato> contatos, UUID cttId) {
-        if (contatos != null) {
-            contatos.removeIf(contato -> contato.getId().equals(cttId));
+    public void removerContato(UUID cttId) {
+        if(this.listaContato != null){
+            this.listaContato.removeIf(contato -> contato.getId().equals(cttId)); //pt de atenção
         }
     }
-
-    // @Override
-    // public void adicionarContato(ContatoDTO ctt, Agenda ag) {
-    //     if(this.listaContato != null){
-    //         this.listaContato.add(ctt.transformaParaObj(ag));
-    //     }
-    // }
-
-    // @Override
-    // public void removerContato(UUID cttId) {
-    //     if(this.listaContato != null){
-    //         this.listaContato.removeIf(contato -> contato.getId().equals(cttId)); //pt de atenção
-    //     }
-    // }
 }
