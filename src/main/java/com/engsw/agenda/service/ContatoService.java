@@ -24,31 +24,15 @@ public class ContatoService {
     @Autowired private ContatoRepository contatoRepo;
     @Autowired private AgendaRepository agendaRepo;
 
-    public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
-        Specification<Contato> spec = Specification
-                                               .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
-                                               .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
-        List<Contato> contatos = contatoRepo.findAll(spec);
-
-        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
-    }
-
-
-    public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
-        Optional<Contato> contato = contatoRepo.findById(contatoId);
-
-        return contato.map(ContatoRespostaDTO::new);
-    }
-
+    //OK
     @Transactional
     public Contato criarContato(ContatoDTO dto, UUID agendaId){ //revisar tipo de retorno
         Agenda agenda = agendaRepo.findById(agendaId).orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
         
-        //Verificacao de digito de telefone
+
         if(dto.getTelefone() == null || !dto.getTelefone().matches("\\d+")) {
             throw new IllegalArgumentException("Telefone inválido. Deve conter apenas dígitos numéricos.");
-        }
-        if(dto.getTelefone().length() != 11 ){
+        } if(dto.getTelefone().length() != 11 ){
             throw new IllegalArgumentException("Telefone inválido. Deve conter exatamente 11 dígitos.");
         }
 
@@ -56,6 +40,7 @@ public class ContatoService {
         return novoSalvo;
     }
     
+    //FALTA ADAPTAR
     @Transactional
     public ContatoRespostaDTO editarContato(UUID contatoId, ContatoDTO contatoNovo){
         Contato contato = 
@@ -74,6 +59,7 @@ public class ContatoService {
         return new ContatoRespostaDTO(contato);
     }
 
+    //OK
     @Transactional
     public void excluirContato(UUID contatoId){
         if(!contatoRepo.existsById(contatoId)){
@@ -83,6 +69,7 @@ public class ContatoService {
         contatoRepo.deleteById(contatoId);
     }
 
+    //OK
     public List<ContatoRespostaDTO> buscarContatosPorAgenda(UUID agendaId, String nome, String telefone){
         Specification<Contato> spec = ContatoSpecification.filtrarPorAgendaId(agendaId);
 
@@ -97,4 +84,21 @@ public class ContatoService {
         return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
     }
 
+
+    //NAO ESTAMOS CHAMANDO AINDA:
+    public List<ContatoRespostaDTO> buscarContatos(ContatoFiltroDTO contatoFiltroDTO){
+        Specification<Contato> spec = Specification
+                                               .where(ContatoSpecification.filtrarPorNome(contatoFiltroDTO.getNome()))
+                                               .and(ContatoSpecification.filtrarPorTelefone(contatoFiltroDTO.getTelefone()));
+        List<Contato> contatos = contatoRepo.findAll(spec);
+
+        return contatos.stream().map(ContatoRespostaDTO::new).collect(Collectors.toList());
+    }
+
+
+    public Optional<ContatoRespostaDTO> buscarContatoPorId(UUID contatoId){
+        Optional<Contato> contato = contatoRepo.findById(contatoId);
+
+        return contato.map(ContatoRespostaDTO::new);
+    }
 }

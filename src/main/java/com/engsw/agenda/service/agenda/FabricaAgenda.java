@@ -1,7 +1,7 @@
 package com.engsw.agenda.service.agenda;
 
-//falta refinar ainda
-public class FabricaAgenda {
+//factory method + singleton
+public class FabricaAgenda { 
     public static final int AGENDAMAP = 0;
     public static final int AGENDALIST = 1;
 
