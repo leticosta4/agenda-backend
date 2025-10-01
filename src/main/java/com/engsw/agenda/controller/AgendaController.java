@@ -80,6 +80,18 @@ public class AgendaController {
         return ResponseEntity.ok(contatoEditado);
     }
 
+    @GetMapping("/{idAgenda}/{contatoId}") 
+    public ResponseEntity<ContatoRespostaDTO> buscarPorId(@PathVariable UUID idAgenda, @PathVariable UUID contatoId){
+        return contatoService.buscarContatoPorId(contatoId)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{idAgenda}/contatos/remover")
+    public ResponseEntity<Void> removerContatosPorNome(@PathVariable UUID idAgenda, @RequestBody ContatoFiltroDTO filtro){
+        contatoService.excluirContatosPorNome(idAgenda,filtro.getNome());
+        return ResponseEntity.noContent().build();
+    }
 
     //não ta sendo usado no momento
     @PatchMapping("/{idAgenda}")
@@ -87,13 +99,6 @@ public class AgendaController {
         Agenda novaAgenda = agendaService.editarAgenda(idAgenda, nomeAgendaNovo);
 
         return ResponseEntity.ok(novaAgenda);
-    }
-
-
-    @DeleteMapping("/{idAgenda}/contatos/remover")
-    public ResponseEntity<Void> removerContatos(@PathVariable UUID idAgenda, @RequestBody ContatoFiltroDTO filtro){
-        contatoService.excluirContatosPorNome(idAgenda,filtro.getNome());
-        return ResponseEntity.noContent().build();
     }
 
     //adaptar talvez o endpoint de acesso unico de contato
