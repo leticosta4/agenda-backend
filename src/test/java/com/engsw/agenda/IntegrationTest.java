@@ -44,7 +44,7 @@ public class IntegrationTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 
-    @Test //ok
+    @Test
     void testeCriarAgenda() throws Exception {
         Map<String, Object> payload = Map.of("nome", "agenda test");
         String json = objectMapper.writeValueAsString(payload);
@@ -58,7 +58,7 @@ public class IntegrationTest {
     }
 
     
-    @Test //ok
+    @Test 
     void testeEntrarAgenda() throws Exception {
         String nome = "agenda-entrar-test";
         String agendaId = createAgenda(nome);
@@ -70,7 +70,7 @@ public class IntegrationTest {
                 .andExpect(jsonPath("$.nome").value(nome));
     }
 
-    @Test //ok
+    @Test 
     void testeAddCriarContatoAgenda() throws Exception {
         String agendaId = createAgenda("agenda para contato");
 
@@ -117,18 +117,15 @@ public class IntegrationTest {
 
     @Test
     void testeDeletarContato() throws Exception {
-        // 1. Setup: Cria uma agenda e um contato
         String agendaId = createAgenda("agenda para deletar contato");
         String contatoId = createContact(agendaId, Map.of(
                 "nome", "Contato Para Deletar",
                 "telefone", "33333333333"
         ));
 
-        // 2. Ação: Envia a requisição DELETE para remover o contato
         mockMvc.perform(delete("/agenda/{idAgenda}/{contatoId}", agendaId, contatoId))
                 .andExpect(status().isNoContent());
 
-        // 3. Verificação: Busca todos os contatos da agenda e confirma que o contato foi removido
         MvcResult result = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -164,7 +161,7 @@ public class IntegrationTest {
                 .content("{\"nome\": \"Contato Comum\"}"))
                 .andExpect(status().isNoContent());
 
-        // confirmar remoção via GET /agenda/{idAgenda}/contatos
+        // confirmar remoção
         MvcResult getAfter = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
                 .andExpect(status().isOk())
                 .andReturn();

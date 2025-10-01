@@ -77,7 +77,6 @@ public class AgendaService {
         return cttCriado;
     }
 
-    //revisar ainda
     @Transactional
     public void removerContatoAgenda(UUID idAgenda, UUID contatoId) {
         Agenda agenda = agendaRepo.findById(idAgenda)
@@ -86,29 +85,12 @@ public class AgendaService {
         contatoService.excluirContato(contatoId);
     }
 
-
-    //revisar
     @Transactional
     public ContatoRespostaDTO editarContatoAgenda(UUID idAgenda, UUID contatoId, ContatoDTO contatoNovo) {
         Agenda agenda = agendaRepo.findById(idAgenda)
                 .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada."));
 
-        Contato contato = contatoRepo.findById(contatoId)
-                .orElseThrow(() -> new EntityNotFoundException("Contato com ID " + contatoId + " não encontrado."));
-
-        if (!contato.getAgenda().getId().equals(agenda.getId())) {
-            throw new IllegalStateException("O contato " + contatoId + " não pertence à agenda " + idAgenda);
-        }
-
-        if (contatoNovo.getNome() != null) {
-            contato.setNome(contatoNovo.getNome());
-        }
-        if (contatoNovo.getTelefone() != null) {
-            contato.setTelefone(contatoNovo.getTelefone());
-        }
-        contato.setModificadoEm(LocalDateTime.now());
-
-        Contato contatoSalvo = contatoRepo.save(contato);
+        Contato contatoSalvo = contatoService.editarContato(contatoId, contatoNovo);
         
         return new ContatoRespostaDTO(contatoSalvo);      
     }

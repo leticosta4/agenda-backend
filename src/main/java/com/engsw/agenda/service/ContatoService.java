@@ -44,7 +44,7 @@ public class ContatoService {
     
     @Transactional
     public Contato editarContato(UUID contatoId, ContatoDTO contatoNovo){
-        Contato contato = contatoRepo.findById(contatoId).orElseThrow(() -> new EntityNotFoundException("Contato não encontrado"));
+        Contato contato = contatoRepo.findById(contatoId).orElseThrow(() -> new EntityNotFoundException("Contato com ID " + contatoId + " não encontrado."));
 
         if (contatoNovo.getNome() != null) {
             contato.setNome(contatoNovo.getNome());
