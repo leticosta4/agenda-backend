@@ -1,6 +1,7 @@
 package com.engsw.agenda.service.agenda;
 
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
+import com.engsw.agenda.repository.ContatoRepository;
 import com.engsw.agenda.service.ContatoService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +25,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
+    @Autowired private ContatoRepository contatoRepo;
     @Autowired private ContatoService contatoService;
 
     int TIPO_AGENDA = 1;
@@ -74,33 +77,21 @@ public class AgendaService {
         return cttCriado;
     }
 
-
     @Transactional
-    public void removerContatoAgenda(UUID idAgenda, UUID idContato) {
+    public void removerContatoAgenda(UUID idAgenda, UUID contatoId) {
         Agenda agenda = agendaRepo.findById(idAgenda)
-            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada."));
 
-        if (agenda.getContatos() != null) {
-            contatoService.excluirContato(idContato); //verificação da existencia do contato la
-        }
-
-        gerenciador.removerContato(idContato);
+        contatoService.excluirContato(contatoId);
     }
 
-
     @Transactional
-    public ContatoRespostaDTO editarContatoAgenda(UUID idAgenda, UUID idContato, ContatoDTO contatoNovo) {
+    public ContatoRespostaDTO editarContatoAgenda(UUID idAgenda, UUID contatoId, ContatoDTO contatoNovo) {
         Agenda agenda = agendaRepo.findById(idAgenda)
-            .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada."));
 
-        Contato cttEditado = new Contato();
-
-        if (agenda.getContatos() != null) {
-            cttEditado = contatoService.editarContato(idContato, contatoNovo);
-        }
-
-        gerenciador.editarContato(cttEditado);
-
-        return new ContatoRespostaDTO(cttEditado);       
+        Contato contatoSalvo = contatoService.editarContato(contatoId, contatoNovo);
+        
+        return new ContatoRespostaDTO(contatoSalvo);      
     }
 }
