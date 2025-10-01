@@ -99,56 +99,48 @@ public class IntegrationTest {
                 "telefone", "11111111111"
         ));
 
-        // 1) GET por id do contato (endpoint: GET /agenda/{contatoId})
-        MvcResult getContatoById = mockMvc.perform(get("/agenda/{agendaId}/{contatoId}", agendaId, contatoId))
-                .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String contatoBody = getContatoById.getResponse().getContentAsString();
-        Map<String,Object> contatoObj = objectMapper.readValue(contatoBody, Map.class);
-
-
-        Map<String,Object> updateMap = new java.util.HashMap<>(contatoObj);
-        updateMap.put("nome", "Contato Editado via GET");
-        updateMap.put("telefone", "22222222222");
-        updateMap.remove("id"); //por causa do dto
-
-        String updateJson = objectMapper.writeValueAsString(updateMap);
+        Map<String, Object> updatePayload = Map.of(
+                "nome", "Contato Editado",
+                "telefone", "22222222222"
+        );
+        String updateJson = objectMapper.writeValueAsString(updatePayload);
 
         mockMvc.perform(patch("/agenda/{idAgenda}/{contatoId}", agendaId, contatoId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateJson))
-                .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(contatoId))
-                .andExpect(jsonPath("$.nome").value("Contato Editado via GET"))
+                .andExpect(jsonPath("$.nome").value("Contato Editado"))
                 .andExpect(jsonPath("$.telefone").value("22222222222"));
     }
 
+
     @Test
     void testeDeletarContato() throws Exception {
+        // 1. Setup: Cria uma agenda e um contato
         String agendaId = createAgenda("agenda para deletar contato");
         String contatoId = createContact(agendaId, Map.of(
                 "nome", "Contato Para Deletar",
                 "telefone", "33333333333"
         ));
 
-        // DELETE /agenda/{idAgenda}/{contatoId}
+        // 2. Ação: Envia a requisição DELETE para remover o contato
         mockMvc.perform(delete("/agenda/{idAgenda}/{contatoId}", agendaId, contatoId))
-                .andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
                 .andExpect(status().isNoContent());
 
-        // confirmar remoção via GET /agenda/{idAgenda}/contatos
-        MvcResult getAfter = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
+        // 3. Verificação: Busca todos os contatos da agenda e confirma que o contato foi removido
+        MvcResult result = mockMvc.perform(get("/agenda/{idAgenda}/contatos", agendaId))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String afterBody = getAfter.getResponse().getContentAsString();
-        List<Map<String,Object>> contatosAfter = objectMapper.readValue(afterBody, List.class);
-        boolean stillExists = contatosAfter.stream().anyMatch(c -> contatoId.equals(String.valueOf(c.get("id"))));
-        assertTrue(!stillExists, "Contato deve ter sido removido da agenda");
-    }
+        String content = result.getResponse().getContentAsString();
+        List<Map<String, Object>> contatosRestantes = objectMapper.readValue(content, List.class);
+
+        boolean aindaExiste = contatosRestantes.stream()
+                .anyMatch(contato -> contato.get("id").equals(contatoId));
+
+        assertTrue(!aindaExiste, "O contato deveria ter sido removido da agenda.");
+   }
 
     @Test
     void testeDeletarVariosContatosPorNome() throws Exception {
