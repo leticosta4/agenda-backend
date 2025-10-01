@@ -83,14 +83,7 @@ public class AgendaService {
         Agenda agenda = agendaRepo.findById(idAgenda)
                 .orElseThrow(() -> new EntityNotFoundException("Agenda com ID " + idAgenda + " não encontrada."));
 
-        Contato contato = contatoRepo.findById(contatoId)
-                .orElseThrow(() -> new EntityNotFoundException("Contato com ID " + contatoId + " não encontrado."));
-
-        if (!contato.getAgenda().getId().equals(agenda.getId())) {
-            throw new IllegalStateException("O contato " + contatoId + " não pertence à agenda " + idAgenda);
-        }
-
-        contatoRepo.deleteById(contatoId);
+        contatoService.excluirContato(contatoId);
     }
 
 

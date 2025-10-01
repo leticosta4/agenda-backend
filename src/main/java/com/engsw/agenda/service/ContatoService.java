@@ -61,7 +61,7 @@ public class ContatoService {
     @Transactional
     public void excluirContato(UUID contatoId){
         if(!contatoRepo.existsById(contatoId)){
-            throw new EntityNotFoundException("Contato não Encontrado");
+            throw new EntityNotFoundException("Contato com ID " + contatoId + " não encontrado.");
         };
 
         contatoRepo.deleteById(contatoId);
