@@ -8,9 +8,10 @@ import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 
 public interface IAgenda {
-    //Collection<Contato> getListaContato();
     public Collection<Contato> criarLista();
 
     public void adicionarContato(ContatoDTO ctt, Agenda ag);
     public void removerContato(UUID cttId);
+    public void editarContato(Contato ctt);
+
 }

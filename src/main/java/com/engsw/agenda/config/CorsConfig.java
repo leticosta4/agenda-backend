@@ -13,7 +13,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // libera todos os endpoints
-                        .allowedOrigins("http://localhost:3000") // origem do seu fronten
+                        .allowedOrigins("http://localhost:3000") // origem do seu frontend
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS")
                         .allowedHeaders("*");
             }
