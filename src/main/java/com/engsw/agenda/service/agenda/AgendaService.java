@@ -1,7 +1,5 @@
 package com.engsw.agenda.service.agenda;
 
-
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,7 +12,6 @@ import com.engsw.agenda.dto.contato.ContatoRespostaDTO;
 import com.engsw.agenda.model.Agenda;
 import com.engsw.agenda.model.Contato;
 import com.engsw.agenda.repository.AgendaRepository;
-import com.engsw.agenda.repository.ContatoRepository;
 import com.engsw.agenda.service.ContatoService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +22,6 @@ import jakarta.transaction.Transactional;
 @Service
 public class AgendaService {
     @Autowired private AgendaRepository agendaRepo;
-    @Autowired private ContatoRepository contatoRepo;
     @Autowired private ContatoService contatoService;
 
     int TIPO_AGENDA = 1;
